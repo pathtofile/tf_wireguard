@@ -1,0 +1,57 @@
+#cloud-config
+
+# Install required packages
+packages:
+ - wireguard
+ - net-tools
+ - iptables
+
+# Create new admin user
+users:
+  - name: ${admin_username}
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ${admin_ssh_pubkey}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+
+write_files:
+  # Create Wireguard config file
+  # NOTE: private key will be created and set by runcmd
+  - path: /etc/wireguard/wg0.conf
+    owner: root:root
+    permissions: "0600"
+    content: |
+      [Interface]
+      Address = 10.77.67.1/24
+      ListenPort = 51820
+      PrivateKey = WG_SRV_PRI
+      PostUp = iptables -t nat -I POSTROUTING -o eth0 -j MASQUERADE
+      PreDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+      SaveConfig = false
+
+      [Peer]
+      PublicKey = ${wg_client_pubkey}
+      PresharedKey = ${wg_psk}
+      AllowedIPs = 10.77.67.1/24
+  # Also configure SSHd
+  - path: /etc/ssh/sshd_config
+    owner: root:root
+    permissions: "0644"
+    append: true
+    content: |
+      PasswordAuthentication no
+      PubkeyAuthentication yes
+      AuthenticationMethods publickey
+      PermitRootLogin no
+      AllowUsers ${admin_username}
+      Port ${ssh_port}
+
+# Setup Wireguard config and start
+runcmd:
+ - sudo systemctl restart ssh
+ - sudo bash -c "echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf && sysctl -p"
+ - sudo bash -c "wg genkey > /etc/wireguard/private.key && chmod go= /etc/wireguard/private.key"
+ - sudo bash -c "cat /etc/wireguard/private.key | wg pubkey > /etc/wireguard/public.key && chmod go= /etc/wireguard/public.key"
+ - sudo bash -c 'WG_PRI=$(cat /etc/wireguard/private.key); sed -i "s@WG_SRV_PRI@$WG_PRI@g" /etc/wireguard/wg0.conf'
+ - sudo systemctl enable wg-quick@wg0.service
+ - sudo systemctl start wg-quick@wg0.service

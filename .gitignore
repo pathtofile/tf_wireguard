@@ -1,0 +1,14 @@
+# Terraform files
+*/.terraform
+*.hcl
+*.tfplan
+*.tfstate
+*.tfstate.*
+*.tfvars
+
+# WireGuard files that might end up in repo
+*.key
+*.conf
+
+# Vagrant
+.vagrant

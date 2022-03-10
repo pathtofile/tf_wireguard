@@ -6,6 +6,7 @@ variable "vm_size" { default = "t2.micro" }
 
 variable "image_publisher" { default = "679593333241" }
 variable "image_name" { default = "ubuntu-minimal/images/hvm-ssd/ubuntu-focal-20.04-*" }
+variable "public_iface" { default = "eth0" }
 
 # Cloud Init settings
 variable "init_script_template" { default = "../cloud_init/cloud_init.yml.tftpl" }
@@ -16,7 +17,8 @@ variable "ssh_key_pub" { default = "~/.ssh/id_rsa.pub" }
 variable "ssh_port" { default = 22 }
 
 # Wireguard settings:
-variable "wg_port" { default = 51821 }
+variable "wg_subnet" { default = "10.77.67.1/24" }
+variable "wg_port" { default = 51820 }
 variable "wg_client_pubkey" { type = string }
 variable "wg_psk" {
   type      = string
@@ -112,7 +114,9 @@ resource "aws_instance" "tf_vm" {
       admin_username   = var.admin_username,
       admin_ssh_pubkey = file(var.ssh_key_pub),
       ssh_port         = var.ssh_port,
-      wg_port          = var.wg_port
+      wg_subnet        = var.wg_subnet,
+      wg_port          = var.wg_port,
+      public_iface     = var.public_iface
   })
 
 }

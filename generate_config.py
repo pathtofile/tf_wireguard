@@ -18,7 +18,7 @@ def main():
     parser = argparse.ArgumentParser("Generate WireGuard config")
     parser.add_argument("cloud_provider",
                         help="Cloud provider",
-                        choices=["aws", "azure", "digitalocean"])
+                        choices=["aws", "azure", "digitalocean", "oci"])
 
     parser.add_argument(
         "ssh_key",
@@ -63,7 +63,8 @@ def main():
     cmd = [
         "ssh", "-oStrictHostKeyChecking=no", *ssh_identity,
         f"{srv_username}@{srv_ip}", "-p",
-        str(ssh_port)
+        str(ssh_port),
+        "/opt/get_wireguard_status"
     ]
     proc = subprocess.run(cmd, check=True, capture_output=True)
     srv_pubkey = proc.stdout.decode().strip()

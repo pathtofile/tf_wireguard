@@ -11,7 +11,8 @@ users:
   - name: ${admin_username}
     shell: /bin/bash
     ssh_authorized_keys:
-      - command="/opt/get_wireguard_status" ${admin_ssh_pubkey}
+      # - command="/opt/get_wireguard_status" ${admin_ssh_pubkey}
+      - ${admin_ssh_pubkey}
     sudo: ALL=(ALL) NOPASSWD:ALL
 
 write_files:
@@ -22,17 +23,40 @@ write_files:
     permissions: "0600"
     content: |
       [Interface]
-      Address = 10.77.67.1/24
+      Address = ${wg_subnet}
       ListenPort = ${wg_port}
       PrivateKey = WG_SRV_PRI
-      PostUp = iptables -t nat -I POSTROUTING -o eth0 -j MASQUERADE
-      PreDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+      PostUp = /etc/wireguard/postup.sh
+      PreDown = /etc/wireguard/predown.sh
       SaveConfig = false
 
       [Peer]
       PublicKey = ${wg_client_pubkey}
       PresharedKey = ${wg_psk}
-      AllowedIPs = 10.77.67.1/24
+      AllowedIPs = ${wg_subnet}
+
+  # Add WireGuard postup and predown scripts
+  - path: /etc/wireguard/postup.sh
+    owner: root:root
+    permissions: "0700"
+    append: true
+    content: |
+      iptables -t nat -I POSTROUTING 1 -s ${wg_subnet} -o ${public_iface} -j MASQUERADE
+      iptables -I INPUT 1 -i wg0 -j ACCEPT
+      iptables -I FORWARD 1 -i ${public_iface} -o wg0 -j ACCEPT
+      iptables -I FORWARD 1 -i wg0 -o ${public_iface} -j ACCEPT
+      iptables -I INPUT 1 -i ${public_iface} -p udp --dport ${wg_port} -j ACCEPT
+  - path: /etc/wireguard/predown.sh
+    owner: root:root
+    permissions: "0700"
+    append: true
+    content: |
+      iptables -t nat -I POSTROUTING -s ${wg_subnet} -o ${public_iface} -j MASQUERADE
+      iptables -D INPUT -i wg0 -j ACCEPT
+      iptables -D FORWARD -i ${public_iface} -o wg0 -j ACCEPT
+      iptables -D FORWARD -i wg0 -o ${public_iface} -j ACCEPT
+      iptables -D INPUT -i ${public_iface} -p udp --dport ${wg_port} -j ACCEPT
+
   # Also configure SSHd
   - path: /etc/ssh/sshd_config
     owner: root:root
@@ -45,6 +69,7 @@ write_files:
       PermitRootLogin no
       AllowUsers ${admin_username}
       Port ${ssh_port}
+
   # Add script that allows a remote user to read pubkey
   - path: /opt/get_wireguard_status
     owner: root:root

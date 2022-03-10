@@ -9,6 +9,7 @@ Simple Terraform Scripts to setup a WireGuard server on various cloud providers.
   - [AWS](#aws)
   - [Azure](#azure)
   - [Digital Ocean](#digital-ocean)
+  - [OCI (Oracle Cloud)](#oci-oracle-cloud)
 - [Running](#running)
   - [Deploy Server](#deploy-server)
   - [Start local client](#start-local-client)
@@ -18,8 +19,9 @@ Simple Terraform Scripts to setup a WireGuard server on various cloud providers.
 # Overview
 Terraform will provision
 - A small Ubuntu 20.04 VM
-- An SSH keypair
 - A new admin user
+- An SSH keypair for new admin user
+- Configure SSH server to only allow 
 - Install and configure WireGuard server
 - Generate new wireguard server keys and output public key
 - Use cloud provider to only allow network connections to SSH, Wireguard, and ICMP.
@@ -86,6 +88,15 @@ file, using `TF_VAR_xxx` environment variables, or manually editing the defaults
 | `image_version`  | Used to select Linux Disto, see [azure.tf](./azure/azure.tf) for example | 20.04 LTS
 
 ## Digital Ocean
+| Variable Name  | Description | Default value |
+| ------------- | ------------- | ------------- |
+| `digitalocean_token`  | DigitalOcean API token |
+| `location`  | Region to deploy VM to | sfo3
+| `vm_size`  | Size of VM  | s-1vcpu-1gb
+| `image`  | Used to select Linux Disto | ubuntu-20-04-x64
+
+## OCI (Oracle Cloud)
+*NOTE* Usuing default OCI shape is valid for the always-free tier 
 | Variable Name  | Description | Default value |
 | ------------- | ------------- | ------------- |
 | `digitalocean_token`  | DigitalOcean API token |

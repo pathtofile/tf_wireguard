@@ -7,6 +7,7 @@ variable "vm_size" { default = "Standard_A1_v2" }
 variable "image_publisher" { default = "Canonical" }
 variable "image_type" { default = "0001-com-ubuntu-server-focal" }
 variable "image_version" { default = "20_04-lts" }
+variable "public_iface" { default = "eth0" }
 
 # Cloud Init settings
 variable "init_script_template" { default = "../cloud_init/cloud_init.yml.tftpl" }
@@ -17,6 +18,7 @@ variable "ssh_key_pub" { default = "~/.ssh/id_rsa.pub" }
 variable "ssh_port" { default = 22 }
 
 # Wireguard settings:
+variable "wg_subnet" { default = "10.77.67.1/24" }
 variable "wg_port" { default = 51820 }
 variable "wg_client_pubkey" { type = string }
 variable "wg_psk" {
@@ -201,7 +203,9 @@ resource "azurerm_linux_virtual_machine" "tf_vm" {
       admin_username   = var.admin_username,
       admin_ssh_pubkey = file(var.ssh_key_pub),
       ssh_port         = var.ssh_port,
-      wg_port          = var.wg_port
+      wg_subnet        = var.wg_subnet,
+      wg_port          = var.wg_port,
+      public_iface     = var.public_iface
   }))
 
   tags = {

@@ -10,6 +10,7 @@ Simple Terraform Scripts to setup a WireGuard server on various cloud providers.
   - [Azure](#azure)
   - [Digital Ocean](#digital-ocean)
   - [OCI (Oracle Cloud)](#oci-oracle-cloud)
+  - [Vultr](#vultr)
 - [Running](#running)
   - [Deploy Server](#deploy-server)
   - [Start local client](#start-local-client)
@@ -62,7 +63,7 @@ file, using `TF_VAR_xxx` environment variables, or manually editing the defaults
 ## All providers:
 | Variable Name  | Description | Default value |
 | ------------- | ------------- | ------------- |
-| `admin_username`  | New admin user to create  | path |
+| `admin_username`  | New admin user to create  | ubuntu |
 | `ssh_key_pub`  | Local path the SSH public key to deploy and use  | ~/.ssh/id_rsa.pub |
 | `ssh_port`  | TCP Port SSH server will listen on  | 22 |
 | `wg_port`  | UDP Port WireGuard server will listen on  | 51820 |
@@ -109,6 +110,14 @@ For the API values see [these guides](https://docs.oracle.com/en-us/iaas/develop
 | `vm_shape`  | Size of VM  | VM.Standard.E2.1.Micro
 | `image_name`  | Used to select Linux Disto | Canonical Ubuntu
 | `image_version`  | Used to select Linux Disto | 20.04
+
+## Vultr
+| Variable Name  | Description | Default value |
+| ------------- | ------------- | ------------- |
+| `api_key`  | API Key |
+| `os_name`  | Used to select Linux Disto | Ubuntu 20.04 x64
+| `region`  | Region to deploy VM to | sjc
+| `vm_plan`  | Size of VM  | vc2-1c-1gb
 
 If using a `.tfvars` file, a basic file looks like this:
 ```ini

@@ -44,7 +44,8 @@ def main():
     with open(args.key_psk, "r") as f:
         key_psk = f.read()
 
-    provider_path = os.path.join(os.path.dirname(__file__), args.cloud_provider)
+    provider_path = os.path.join(os.path.dirname(__file__),
+                                 args.cloud_provider)
 
     # First, We need the remote server's IP address and username
     cmd = ["terraform", f"-chdir={provider_path}", "output", "-json"]
@@ -61,8 +62,7 @@ def main():
     cmd = [
         "ssh", "-oStrictHostKeyChecking=no", *ssh_identity,
         f"{srv_username}@{srv_ip}", "-p",
-        str(ssh_port),
-        "sudo bash -c 'cloud-init status --wait >/dev/null && wg >/dev/null && cat /etc/wireguard/public.key'"
+        str(ssh_port)
     ]
     proc = subprocess.run(cmd, check=True, capture_output=True)
     srv_pubkey = proc.stdout.decode().strip()

@@ -11,7 +11,7 @@ users:
   - name: ${admin_username}
     shell: /bin/bash
     ssh_authorized_keys:
-      - ${admin_ssh_pubkey}
+      - command="/opt/get_wireguard_status" ${admin_ssh_pubkey}
     sudo: ALL=(ALL) NOPASSWD:ALL
 
 write_files:
@@ -45,6 +45,17 @@ write_files:
       PermitRootLogin no
       AllowUsers ${admin_username}
       Port ${ssh_port}
+  # Add script that allows a remote user to read pubkey
+  - path: /opt/get_wireguard_status
+    owner: root:root
+    permissions: "0755"
+    append: true
+    content: |
+      #!/bin/bash
+      set -e -o pipefail
+      sudo cloud-init status --wait >/dev/null
+      sudo wg >/dev/null
+      sudo cat /etc/wireguard/public.key
 
 # Setup Wireguard config and start
 runcmd:

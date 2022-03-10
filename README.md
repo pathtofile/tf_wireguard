@@ -96,13 +96,18 @@ file, using `TF_VAR_xxx` environment variables, or manually editing the defaults
 | `image`  | Used to select Linux Disto | ubuntu-20-04-x64
 
 ## OCI (Oracle Cloud)
-*NOTE* Usuing default OCI shape is valid for the always-free tier 
+*NOTE* Usuing default OCI shape is valid for the always-free tier.
+For the API values see [these guides](https://docs.oracle.com/en-us/iaas/developer-tutorials/tutorials/tf-provider/01-summary.htm)
 | Variable Name  | Description | Default value |
 | ------------- | ------------- | ------------- |
-| `digitalocean_token`  | DigitalOcean API token |
-| `location`  | Region to deploy VM to | sfo3
-| `vm_size`  | Size of VM  | s-1vcpu-1gb
-| `image`  | Used to select Linux Disto | ubuntu-20-04-x64
+| `tenancy_ocid`  | tenancy OCID for API |
+| `user_ocid`  | tenancy OCID for API |
+| `api_fingerprint`  | API key fingerprint |
+| `api_key_pri`  | Path to API private key |
+| `location`  | Region to deploy VM to | ap-sydney-1
+| `vm_shape`  | Size of VM  | VM.Standard.E2.1.Micro
+| `image_name`  | Used to select Linux Disto | Canonical Ubuntu
+| `image_version`  | Used to select Linux Disto | 20.04
 
 If using a `.tfvars` file, a basic file looks like this:
 ```ini

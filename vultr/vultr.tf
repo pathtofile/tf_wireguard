@@ -75,11 +75,11 @@ resource "vultr_firewall_rule" "tf_fw_wg" {
 
 # Create Instance
 resource "vultr_instance" "tf_instance" {
-  hostname          = "tfinstance"
-  enable_ipv6       = false
-  plan              = var.vm_plan
-  region            = var.region
-  os_id             = data.vultr_os.tf_os.id
+  hostname    = "tfinstance"
+  enable_ipv6 = false
+  plan        = var.vm_plan
+  region      = var.region
+  os_id       = data.vultr_os.tf_os.id
   user_data = templatefile(
     var.init_script_template,
     {

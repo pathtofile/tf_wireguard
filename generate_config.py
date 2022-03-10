@@ -20,7 +20,7 @@ def main():
     parser = argparse.ArgumentParser("Generate WireGuard config")
     parser.add_argument("cloud_provider",
                         help="Cloud provider",
-                        choices=["aws", "azure", "digitalocean", "oci"])
+                        choices=["aws", "azure", "digitalocean", "oci", "vultr"])
 
     parser.add_argument(
         "ssh_key",

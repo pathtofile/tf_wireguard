@@ -10,7 +10,7 @@ variable "image_version" { default = "20_04-lts" }
 variable "public_iface" { default = "eth0" }
 
 # Cloud Init settings
-variable "init_script_template" { default = "../cloud_init/cloud_init.yml.tftpl" }
+variable "init_script_template" { default = "../cloud_init.yml.tftpl" }
 
 # SSH settings:
 variable "admin_username" { default = "ubuntu" }

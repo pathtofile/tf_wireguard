@@ -21,7 +21,7 @@ variable "image_version" { default = "20.04" }
 variable "public_iface" { default = "ens3" }
 
 # Cloud Init settings
-variable "init_script_template" { default = "../cloud_init/cloud_init.yml.tftpl" }
+variable "init_script_template" { default = "../cloud_init.yml.tftpl" }
 
 # SSH settings:
 variable "admin_username" { default = "ubuntu" }

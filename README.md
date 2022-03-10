@@ -66,9 +66,10 @@ file, using `TF_VAR_xxx` environment variables, or manually editing the defaults
 | `ssh_key_pub`  | Local path the SSH public key to deploy and use  | ~/.ssh/id_rsa.pub |
 | `ssh_port`  | TCP Port SSH server will listen on  | 22 |
 | `wg_port`  | UDP Port WireGuard server will listen on  | 51820 |
+| `wg_subnet`  | Private IP Subnet that WireGuard will use | 10.77.67.1/24 |
 | `wg_client_pubkey`  | The Client's WireGuard `public.key` | |
 | `wg_psk`  | The Client's WireGuard `psk.key` | |
-| `init_script_template` | The `cloud-init` script to run | [./cloud_init/cloud_init.yml.tftpl](./cloud_init/cloud_init.yml.tftpl) |
+| `init_script_template` | The `cloud-init` script to run | [cloud_init.yml.tftpl](cloud_init.yml.tftpl) |
 
 ## AWS
 | Variable Name  | Description | Default value |

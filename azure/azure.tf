@@ -17,6 +17,7 @@ variable "ssh_key_pub" { default = "~/.ssh/id_rsa.pub" }
 variable "ssh_port" { default = 22 }
 
 # Wireguard settings:
+variable "wg_port" { default = 51820 }
 variable "wg_client_pubkey" { type = string }
 variable "wg_psk" {
   type      = string
@@ -112,7 +113,7 @@ resource "azurerm_network_security_group" "tf_nsg" {
     access                     = "Allow"
     protocol                   = "Udp"
     source_port_range          = "*"
-    destination_port_range     = "51820"
+    destination_port_range     = tostring(var.wg_port)
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
@@ -199,7 +200,8 @@ resource "azurerm_linux_virtual_machine" "tf_vm" {
       wg_psk           = var.wg_psk,
       admin_username   = var.admin_username,
       admin_ssh_pubkey = file(var.ssh_key_pub),
-      ssh_port         = var.ssh_port
+      ssh_port         = var.ssh_port,
+      wg_port          = var.wg_port
   }))
 
   tags = {
@@ -211,9 +213,12 @@ resource "azurerm_linux_virtual_machine" "tf_vm" {
 output "username" {
   value = var.admin_username
 }
+output "ip_address" {
+  value = azurerm_linux_virtual_machine.tf_vm.*.public_ip_address
+}
 output "ssh_port" {
   value = var.ssh_port
 }
-output "ip_address" {
-  value = azurerm_linux_virtual_machine.tf_vm.*.public_ip_address
+output "wg_port" {
+  value = var.wg_port
 }

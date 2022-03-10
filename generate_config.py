@@ -54,6 +54,7 @@ def main():
     srv_ip = output["ip_address"]["value"]
     srv_username = output["username"]["value"]
     ssh_port = output["ssh_port"]["value"]
+    wg_port = output["wg_port"]["value"]
 
     # Use SSH to get the Server's public key
     ssh_identity = list()
@@ -78,7 +79,7 @@ def main():
         PublicKey = {srv_pubkey}
         PresharedKey = {key_psk}
         AllowedIPs = 0.0.0.0/0
-        Endpoint = {srv_ip}:51820
+        Endpoint = {srv_ip}:{wg_port}
         PersistentKeepalive = 25\
         """)
     print(config)

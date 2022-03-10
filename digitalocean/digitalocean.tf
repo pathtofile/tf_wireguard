@@ -20,6 +20,7 @@ variable "ssh_key_pub" { default = "~/.ssh/id_rsa.pub" }
 variable "ssh_port" { default = 22 }
 
 # Wireguard settings:
+variable "wg_port" { default = 51820 }
 variable "wg_client_pubkey" { type = string }
 variable "wg_psk" {
   type      = string
@@ -63,7 +64,7 @@ resource "digitalocean_firewall" "tf_firewall" {
 
   inbound_rule {
     protocol         = "udp"
-    port_range       = "51820"
+    port_range       = tostring(var.wg_port)
     source_addresses = ["0.0.0.0/0", "::/0"]
   }
 
@@ -105,18 +106,22 @@ resource "digitalocean_droplet" "tf_vm" {
       wg_psk           = var.wg_psk,
       admin_username   = var.admin_username,
       admin_ssh_pubkey = file(var.ssh_key_pub),
-      ssh_port         = var.ssh_port
+      ssh_port         = var.ssh_port,
+      wg_port          = var.wg_port
   })
 
 }
 
 # Output
-output "ssh_port" {
-  value = var.ssh_port
-}
 output "username" {
   value = var.admin_username
 }
 output "ip_address" {
   value = digitalocean_droplet.tf_vm.ipv4_address
+}
+output "ssh_port" {
+  value = var.ssh_port
+}
+output "wg_port" {
+  value = var.wg_port
 }

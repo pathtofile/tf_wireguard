@@ -20,7 +20,7 @@ Terraform will provision
 - A small Ubuntu 20.04 VM
 - An SSH keypair
 - A new admin user
-- Install and configure WireGuard server on port `51820`
+- Install and configure WireGuard server
 - Generate new wireguard server keys and output public key
 - Use cloud provider to only allow network connections to SSH, Wireguard, and ICMP.
 
@@ -62,7 +62,8 @@ file, using `TF_VAR_xxx` environment variables, or manually editing the defaults
 | ------------- | ------------- | ------------- |
 | `admin_username`  | New admin user to create  | path |
 | `ssh_key_pub`  | Local path the SSH public key to deploy and use  | ~/.ssh/id_rsa.pub |
-| `ssh_port`  | Port SSH server will listen on  | 22 |
+| `ssh_port`  | TCP Port SSH server will listen on  | 22 |
+| `wg_port`  | UDP Port WireGuard server will listen on  | 51820 |
 | `wg_client_pubkey`  | The Client's WireGuard `public.key` | |
 | `wg_psk`  | The Client's WireGuard `psk.key` | |
 | `init_script_template` | The `cloud-init` script to run | [./cloud_init/cloud_init.yml.tftpl](./cloud_init/cloud_init.yml.tftpl) |
@@ -98,6 +99,7 @@ If using a `.tfvars` file, a basic file looks like this:
 admin_username = "path"
 ssh_key_pub = "~/.ssh/cloud.pub"
 ssh_port = 2222
+wg_port = 5555
 wg_client_pubkey = "aaaaaaa"
 wg_psk = "aaaaa"
 

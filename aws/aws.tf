@@ -16,6 +16,7 @@ variable "ssh_key_pub" { default = "~/.ssh/id_rsa.pub" }
 variable "ssh_port" { default = 22 }
 
 # Wireguard settings:
+variable "wg_port" { default = 51821 }
 variable "wg_client_pubkey" { type = string }
 variable "wg_psk" {
   type      = string
@@ -72,8 +73,8 @@ resource "aws_security_group" "tf_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port   = 51820
-    to_port     = 51820
+    from_port   = var.wg_port
+    to_port     = var.wg_port
     protocol    = "udp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -110,7 +111,8 @@ resource "aws_instance" "tf_vm" {
       wg_psk           = var.wg_psk,
       admin_username   = var.admin_username,
       admin_ssh_pubkey = file(var.ssh_key_pub),
-      ssh_port         = var.ssh_port
+      ssh_port         = var.ssh_port,
+      wg_port          = var.wg_port
   })
 
 }
@@ -119,9 +121,12 @@ resource "aws_instance" "tf_vm" {
 output "username" {
   value = var.admin_username
 }
+output "ip_address" {
+  value = aws_instance.tf_vm.public_ip
+}
 output "ssh_port" {
   value = var.ssh_port
 }
-output "ip_address" {
-  value = aws_instance.tf_vm.public_ip
+output "wg_port" {
+  value = var.wg_port
 }

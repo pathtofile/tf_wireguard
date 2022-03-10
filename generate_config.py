@@ -13,6 +13,8 @@ import argparse
 import subprocess
 import textwrap
 
+ROOT_DIR = os.path.dirname(__file__)
+
 
 def main():
     parser = argparse.ArgumentParser("Generate WireGuard config")
@@ -24,18 +26,20 @@ def main():
         "ssh_key",
         help="path to SSH private key, used to connect to WG Server")
 
-    key_folder = ""
-    if os.name != "nt":
-        key_folder = "/etc/wireguard/"
+    if os.name == "nt":
+        default_key_folder = ROOT_DIR
+    else:
+        default_key_folder = "/etc/wireguard/"
     parser.add_argument("--private-key-path",
                         "-pri",
                         dest="key_pri",
-                        default=key_folder + "private.key",
+                        default=os.path.join(default_key_folder,
+                                             "private.key"),
                         help="Path to wg client private key")
     parser.add_argument("--preshared-key-path",
                         "-psk",
                         dest="key_psk",
-                        default=key_folder + "psk.key",
+                        default=os.path.join(default_key_folder, "psk.key"),
                         help="Path to wg client preshared key")
 
     args = parser.parse_args()
@@ -44,8 +48,7 @@ def main():
     with open(args.key_psk, "r") as f:
         key_psk = f.read()
 
-    provider_path = os.path.join(os.path.dirname(__file__),
-                                 args.cloud_provider)
+    provider_path = os.path.join(ROOT_DIR, args.cloud_provider)
 
     # First, We need the remote server's IP address and username
     cmd = ["terraform", f"-chdir={provider_path}", "output", "-json"]
@@ -63,8 +66,7 @@ def main():
     cmd = [
         "ssh", "-oStrictHostKeyChecking=no", *ssh_identity,
         f"{srv_username}@{srv_ip}", "-p",
-        str(ssh_port),
-        "/opt/get_wireguard_status"
+        str(ssh_port), "/opt/get_wireguard_status"
     ]
     proc = subprocess.run(cmd, check=True, capture_output=True)
     srv_pubkey = proc.stdout.decode().strip()

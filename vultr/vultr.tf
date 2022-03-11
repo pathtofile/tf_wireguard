@@ -10,7 +10,7 @@ variable "api_key" {
 variable "os_name" { default = "Ubuntu 20.04 x64" }
 variable "region" { default = "sjc" }
 variable "vm_plan" { default = "vc2-1c-1gb" }
-variable "public_iface" { default = "eth0" }
+variable "public_iface" { default = "enp1s0" }
 
 # Cloud Init settings
 variable "init_script_template" { default = "../cloud_init.yml.tftpl" }

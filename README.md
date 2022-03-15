@@ -16,6 +16,10 @@ Simple Terraform Scripts to setup a WireGuard server on various cloud providers.
   - [Start local client](#start-local-client)
   - [Alternate client: Vagrant](#alternate-client-vagrant)
 - [Cleanup](#cleanup)
+- [Why?](#why)
+  - [Why should I use this?](#why-should-i-use-this)
+  - [Why use this over a commercial VPN provider](#why-use-this-over-a-commercial-vpn-provider)
+- [Why use this of Algo?](#why-use-this-of-algo)
 
 # Overview
 Terraform will provision
@@ -245,3 +249,18 @@ To cleanup Vagrant VM:
 ```bash
 vagrant destroy --force
 ```
+
+# Why?
+## Why should I use this?
+This is 99% just for myself, however I have made it public in case it is useful to others.
+
+## Why use this over a commercial VPN provider
+For me, I like having more control over the endpoint my traffic comes out of.
+
+# Why use this of Algo?
+You probably shouldn't. [Algo](https://github.com/trailofbits/algo/) is an awesome project that does so much more than this,
+includinf QR Codes for mobile devices, enabling IKEv2, deployment options for more cloud providers, etc.
+
+For my personal use, however, I found it to do a little *too* much, and digging into the code to understand exactly what it
+does was difficult at times. I wanted to create a project that I could understand how it worked, and did the minimal amount
+to create a secure-enough temporary VPN endpoint.

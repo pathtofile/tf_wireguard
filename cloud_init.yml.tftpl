@@ -11,8 +11,8 @@ users:
   - name: ${admin_username}
     shell: /bin/bash
     ssh_authorized_keys:
-      # - command="/opt/get_wireguard_status" ${admin_ssh_pubkey}
-      - ${admin_ssh_pubkey}
+      # - ${admin_ssh_pubkey}
+      - command="/opt/get_wireguard_status" ${admin_ssh_pubkey}
     sudo: ALL=(ALL) NOPASSWD:ALL
 
 write_files:
@@ -85,9 +85,12 @@ write_files:
 # Setup Wireguard config and start
 runcmd:
  # Setup firewall, just in case cloud provider firewall fails/is disabled
- - sudo ufw allow proto tcp from any to any port ${ssh_port}
- - sudo ufw allow proto udp from any to any port ${wg_port}
+ - sudo ufw allow ${ssh_port}/tcp
+ - sudo ufw allow ${wg_port}/udp
  - sudo ufw enable
+ # Ensure iptables works for ssh, which might be a different port
+ - sudo bash -c 'iptables -D INPUT -i ${public_iface} -p tcp --dport 22 -j ACCEPT || true'
+ - sudo iptables -I INPUT 1 -i ${public_iface} -p tcp --dport ${ssh_port} -j ACCEPT
  # Restart sshd to pick up new config
  - sudo systemctl restart ssh
  # Enable IP Forwarding and create wiereguard keys

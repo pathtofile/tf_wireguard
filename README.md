@@ -253,6 +253,9 @@ vagrant destroy --force
 # Why?
 ## Why should I use this?
 This is 99% just for myself, however I have made it public in case it is useful to others.
+I have found creating this project useful to demonstrate:
+- How to automatically create a basic '1 VM with SSH access' setup on the various cloud providers
+- How to simply and automatically create a basic wireguard tunnel between two machines
 
 ## Why use this over a commercial VPN provider
 For me, I like having more control over the endpoint my traffic comes out of.

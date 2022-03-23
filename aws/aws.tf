@@ -17,7 +17,6 @@ variable "ssh_key_pub" { default = "~/.ssh/id_rsa.pub" }
 variable "ssh_port" { default = 22 }
 
 # Wireguard settings:
-variable "wg_subnet" { default = "10.77.67.1/24" }
 variable "wg_port" { default = 51820 }
 variable "wg_client_pubkey" { type = string }
 variable "wg_psk" {
@@ -114,7 +113,6 @@ resource "aws_instance" "tf_vm" {
       admin_username   = var.admin_username,
       admin_ssh_pubkey = file(var.ssh_key_pub),
       ssh_port         = var.ssh_port,
-      wg_subnet        = var.wg_subnet,
       wg_port          = var.wg_port,
       public_iface     = var.public_iface
   })

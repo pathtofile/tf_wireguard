@@ -23,7 +23,7 @@ write_files:
     permissions: "0600"
     content: |
       [Interface]
-      Address = ${wg_subnet}
+      Address = 10.77.67.1
       ListenPort = ${wg_port}
       PrivateKey = WG_SRV_PRI
       PostUp = /etc/wireguard/postup.sh
@@ -33,7 +33,7 @@ write_files:
       [Peer]
       PublicKey = ${wg_client_pubkey}
       PresharedKey = ${wg_psk}
-      AllowedIPs = ${wg_subnet}
+      AllowedIPs = 10.77.67.2
 
   # Add WireGuard postup and predown scripts
   - path: /etc/wireguard/postup.sh
@@ -41,7 +41,7 @@ write_files:
     permissions: "0700"
     append: true
     content: |
-      iptables -t nat -I POSTROUTING 1 -s ${wg_subnet} -o ${public_iface} -j MASQUERADE
+      iptables -t nat -I POSTROUTING 1 -s 10.77.67.2 -o ${public_iface} -j MASQUERADE
       iptables -I INPUT 1 -i wg0 -j ACCEPT
       iptables -I FORWARD 1 -i ${public_iface} -o wg0 -j ACCEPT
       iptables -I FORWARD 1 -i wg0 -o ${public_iface} -j ACCEPT
@@ -51,7 +51,7 @@ write_files:
     permissions: "0700"
     append: true
     content: |
-      iptables -t nat -I POSTROUTING -s ${wg_subnet} -o ${public_iface} -j MASQUERADE
+      iptables -t nat -D POSTROUTING -s 10.77.67.2 -o ${public_iface} -j MASQUERADE
       iptables -D INPUT -i wg0 -j ACCEPT
       iptables -D FORWARD -i ${public_iface} -o wg0 -j ACCEPT
       iptables -D FORWARD -i wg0 -o ${public_iface} -j ACCEPT

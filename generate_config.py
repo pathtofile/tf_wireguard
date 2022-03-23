@@ -54,7 +54,10 @@ def main():
     cmd = ["terraform", f"-chdir={provider_path}", "output", "-json"]
     proc = subprocess.run(cmd, check=True, capture_output=True)
     output = json.loads(proc.stdout.decode())
+    # Some outputs return a list of a IP address
     srv_ip = output["ip_address"]["value"]
+    if type(srv_ip) == list:
+        srv_ip = output["ip_address"]["value"][0]
     srv_username = output["username"]["value"]
     ssh_port = output["ssh_port"]["value"]
     wg_port = output["wg_port"]["value"]

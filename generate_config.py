@@ -15,12 +15,12 @@ import textwrap
 
 ROOT_DIR = os.path.dirname(__file__)
 
-
 def main():
     parser = argparse.ArgumentParser("Generate WireGuard config")
+    providers = [p for p in next(os.walk(ROOT_DIR))[1] if not p.startswith(".")]
     parser.add_argument("cloud_provider",
                         help="Cloud provider",
-                        choices=["aws", "azure", "digitalocean", "oci", "vultr"])
+                        choices=providers)
 
     parser.add_argument(
         "ssh_key",

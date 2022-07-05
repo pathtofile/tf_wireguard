@@ -1,6 +1,7 @@
 # ------------------------------------------------------
 # ------------------------------------------------------
 # VM settings:
+# https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html
 variable "location" { default = "us-west-1" }
 variable "vm_size" { default = "t2.micro" }
 

@@ -10,7 +10,7 @@ variable "image_version" { default = "20_04-lts" }
 variable "public_iface" { default = "eth0" }
 
 # Cloud Init settings
-variable "init_script_template" { default = "../cloud_init.yml.tftpl" }
+variable "init_script_template" { default = "cloud_init.yml.tftpl" }
 
 # SSH settings:
 variable "admin_username" { default = "ubuntu" }
@@ -170,7 +170,7 @@ resource "azurerm_linux_virtual_machine" "tf_vm" {
   location              = var.location
   resource_group_name   = azurerm_resource_group.tf_group.name
   network_interface_ids = [azurerm_network_interface.tf_nic.id]
-  size                  = var.vm_size
+  size                  = var.vm_size != "" ? var.vm_size : "Standard_A1_v2"
 
   os_disk {
     name                 = "tf_os_disk"

@@ -10,7 +10,7 @@ variable "image_name" { default = "ubuntu-minimal/images/hvm-ssd/ubuntu-focal-20
 variable "public_iface" { default = "eth0" }
 
 # Cloud Init settings
-variable "init_script_template" { default = "../cloud_init.yml.tftpl" }
+variable "init_script_template" { default = "cloud_init.yml.tftpl" }
 
 # SSH settings:
 variable "admin_username" { default = "ubuntu" }
@@ -95,7 +95,7 @@ resource "aws_security_group" "tf_sg" {
 
 resource "aws_instance" "tf_vm" {
   ami                         = data.aws_ami.tf_ami.id
-  instance_type               = var.vm_size
+  instance_type               = var.vm_size != "" ? var.vm_size : "t2.micro"
   key_name                    = aws_key_pair.tf_keypair.key_name
   vpc_security_group_ids      = [aws_security_group.tf_sg.id]
   associate_public_ip_address = true

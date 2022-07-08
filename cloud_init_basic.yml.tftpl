@@ -1,0 +1,9 @@
+#cloud-config
+
+# Create new admin user
+users:
+  - name: ${admin_username}
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ${admin_ssh_pubkey}
+    sudo: ALL=(ALL) NOPASSWD:ALL

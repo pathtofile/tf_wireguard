@@ -110,7 +110,7 @@ For the API values see [these guides](https://docs.oracle.com/en-us/iaas/develop
 | `api_fingerprint`  | API key fingerprint |
 | `api_key_pri`  | Path to API private key |
 | `location`  | Region to deploy VM to | ap-sydney-1
-| `vm_shape`  | Size of VM  | VM.Standard.E2.1.Micro
+| `vm_size`  | Size of VM  | VM.Standard.E2.1.Micro
 | `image_name`  | Used to select Linux Disto | Canonical Ubuntu
 | `image_version`  | Used to select Linux Disto | 20.04
 
@@ -120,7 +120,7 @@ For the API values see [these guides](https://docs.oracle.com/en-us/iaas/develop
 | `api_key`  | API Key |
 | `os_name`  | Used to select Linux Disto | Ubuntu 20.04 x64
 | `region`  | Region to deploy VM to | sjc
-| `vm_plan`  | Size of VM  | vc2-1c-1gb
+| `vm_size`  | Size of VM  | vc2-1c-1gb
 
 If using a `.tfvars` file, a basic file looks like this:
 ```ini

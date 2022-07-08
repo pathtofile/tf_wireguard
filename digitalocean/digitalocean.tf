@@ -13,7 +13,7 @@ variable "image" { default = "ubuntu-20-04-x64" }
 variable "public_iface" { default = "eth0" }
 
 # Cloud Init settings
-variable "init_script_template" { default = "../cloud_init.yml.tftpl" }
+variable "init_script_template" { default = "cloud_init.yml.tftpl" }
 
 # SSH settings:
 variable "admin_username" { default = "ubuntu" }
@@ -97,7 +97,7 @@ resource "digitalocean_droplet" "tf_vm" {
   image    = var.image
   name     = "tfvm"
   region   = var.location
-  size     = var.vm_size
+  size     = var.vm_size != "" ? var.vm_size : "s-1vcpu-1gb"
   ssh_keys = [digitalocean_ssh_key.tf_keypair.fingerprint]
 
   user_data = templatefile(

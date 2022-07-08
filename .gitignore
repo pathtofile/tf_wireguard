@@ -1,5 +1,6 @@
 # Terraform files
 */.terraform
+.terraform
 *.hcl
 *.tfplan
 *.tfstate
@@ -11,4 +12,4 @@
 *.conf
 
 # Vagrant
-.vagrant
+vagrant/.vagrant

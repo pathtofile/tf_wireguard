@@ -3,7 +3,10 @@
 # VM settings:
 # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html
 variable "location" { default = "us-west-1" }
-variable "vm_size" { default = "t2.micro" }
+variable "vm_size" {
+  default  = "t2.micro"
+  nullable = false
+}
 
 variable "image_publisher" { default = "679593333241" }
 variable "image_name" { default = "ubuntu-minimal/images/hvm-ssd/ubuntu-focal-20.04-amd64-*" }
@@ -95,7 +98,7 @@ resource "aws_security_group" "tf_sg" {
 
 resource "aws_instance" "tf_vm" {
   ami                         = data.aws_ami.tf_ami.id
-  instance_type               = var.vm_size != "" ? var.vm_size : "t2.micro"
+  instance_type               = var.vm_size
   key_name                    = aws_key_pair.tf_keypair.key_name
   vpc_security_group_ids      = [aws_security_group.tf_sg.id]
   associate_public_ip_address = true

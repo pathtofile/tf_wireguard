@@ -2,7 +2,10 @@
 # ------------------------------------------------------
 # VM Settings:
 variable "location" { default = "australiaeast" }
-variable "vm_size" { default = "Standard_A1_v2" }
+variable "vm_size" {
+  default  = "Standard_A1_v2"
+  nullable = false
+}
 
 variable "image_publisher" { default = "Canonical" }
 variable "image_name" { default = "0001-com-ubuntu-server-focal" }
@@ -170,7 +173,7 @@ resource "azurerm_linux_virtual_machine" "tf_vm" {
   location              = var.location
   resource_group_name   = azurerm_resource_group.tf_group.name
   network_interface_ids = [azurerm_network_interface.tf_nic.id]
-  size                  = var.vm_size != "" ? var.vm_size : "Standard_A1_v2"
+  size                  = var.vm_size
 
   os_disk {
     name                 = "tf_os_disk"

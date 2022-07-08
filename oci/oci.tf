@@ -14,8 +14,10 @@ variable "api_key_pri" { type = string }
 
 # VM Settings:
 variable "location" { default = "ap-sydney-1" }
-variable "vm_size" { default = "VM.Standard.E2.1.Micro" }
-
+variable "vm_size" {
+  default  = "VM.Standard.E2.1.Micro"
+  nullable = false
+}
 variable "image_name" { default = "Canonical Ubuntu" }
 variable "image_version" { default = "20.04" }
 variable "public_iface" { default = "ens3" }
@@ -52,7 +54,7 @@ data "oci_core_images" "tf_image" {
   compartment_id           = var.tenancy_ocid
   operating_system         = var.image_name
   operating_system_version = var.image_version
-  shape                    = var.vm_size != "" ? var.vm_size : "VM.Standard.E2.1.Micro"
+  shape                    = var.vm_size
   sort_by                  = "TIMECREATED"
   sort_order               = "DESC"
 }
@@ -149,7 +151,7 @@ resource "oci_core_instance" "tf_instance" {
   availability_domain = data.oci_identity_availability_domain.tf_ad.name
   compartment_id      = var.tenancy_ocid
   display_name        = "tfinstance"
-  shape               = var.vm_size != "" ? var.vm_size : "VM.Standard.E2.1.Micro"
+  shape               = var.vm_size
 
   create_vnic_details {
     subnet_id        = oci_core_subnet.test_subnet.id

@@ -8,7 +8,10 @@ variable "digitalocean_token" {
 
 # VM settings:
 variable "location" { default = "sfo3" }
-variable "vm_size" { default = "s-1vcpu-1gb" }
+variable "vm_size" {
+  default  = "s-1vcpu-1gb"
+  nullable = false
+}
 variable "image_name" { default = "ubuntu-20-04-x64" }
 variable "public_iface" { default = "eth0" }
 
@@ -97,7 +100,7 @@ resource "digitalocean_droplet" "tf_vm" {
   image    = var.image_name
   name     = "tfvm"
   region   = var.location
-  size     = var.vm_size != "" ? var.vm_size : "s-1vcpu-1gb"
+  size     = var.vm_size
   ssh_keys = [digitalocean_ssh_key.tf_keypair.fingerprint]
 
   user_data = templatefile(

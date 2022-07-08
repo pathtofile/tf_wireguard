@@ -8,12 +8,13 @@ module "mod" {
   wg_psk           = var.wg_psk
   wg_port          = var.wg_port
   location         = var.location
+  vm_size          = var.vm_size
 }
 
 # VM Settings:
 variable "init_script_template" { default = "cloud_init.yml.tftpl" }
-variable "vm_size" { default = "" }
 variable "location" { type = string }
+variable "vm_size" { default = null }
 
 # SSH settings:
 variable "admin_username" { default = "ubuntu" }

@@ -9,7 +9,10 @@ variable "api_key" {
 # VM Settings, sjc == Silicon Valley:
 variable "image_name" { default = "Ubuntu 20.04 x64" }
 variable "region" { default = "sjc" }
-variable "vm_size" { default = "vc2-1c-1gb" }
+variable "vm_size" {
+  default  = "vc2-1c-1gb"
+  nullable = false
+}
 variable "public_iface" { default = "enp1s0" }
 
 # Cloud Init settings
@@ -76,7 +79,7 @@ resource "vultr_firewall_rule" "tf_fw_wg" {
 resource "vultr_instance" "tf_instance" {
   hostname    = "tfinstance"
   enable_ipv6 = false
-  plan        = var.vm_size != "" ? var.vm_size : "vc2-1c-1gb"
+  plan        = var.vm_size
   region      = var.region
   os_id       = data.vultr_os.tf_os.id
   user_data = templatefile(

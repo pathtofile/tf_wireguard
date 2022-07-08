@@ -89,7 +89,7 @@ file, using `TF_VAR_xxx` environment variables, or manually editing the defaults
 | `location`  | Region to deploy VM to | australiaeast
 | `vm_size`  | Size of VM  | Standard_A1_v2
 | `image_publisher`  | Used to select Linux Disto, see [azure.tf](./azure/azure.tf) for example | Canonical
-| `image_type`  | Used to select Linux Disto, see [azure.tf](./azure/azure.tf) for example | Ubuntu Server
+| `image_name`  | Used to select Linux Disto, see [azure.tf](./azure/azure.tf) for example | Ubuntu Server
 | `image_version`  | Used to select Linux Disto, see [azure.tf](./azure/azure.tf) for example | 20.04 LTS
 
 ## Digital Ocean
@@ -98,7 +98,7 @@ file, using `TF_VAR_xxx` environment variables, or manually editing the defaults
 | `digitalocean_token`  | DigitalOcean API token |
 | `location`  | Region to deploy VM to | sfo3
 | `vm_size`  | Size of VM  | s-1vcpu-1gb
-| `image`  | Used to select Linux Disto | ubuntu-20-04-x64
+| `image_name`  | Used to select Linux Disto | ubuntu-20-04-x64
 
 ## OCI (Oracle Cloud)
 *NOTE* Usuing default OCI shape is valid for the always-free tier.
@@ -118,7 +118,7 @@ For the API values see [these guides](https://docs.oracle.com/en-us/iaas/develop
 | Variable Name  | Description | Default value |
 | ------------- | ------------- | ------------- |
 | `api_key`  | API Key |
-| `os_name`  | Used to select Linux Disto | Ubuntu 20.04 x64
+| `image_name`  | Used to select Linux Disto | Ubuntu 20.04 x64
 | `region`  | Region to deploy VM to | sjc
 | `vm_size`  | Size of VM  | vc2-1c-1gb
 

@@ -7,7 +7,7 @@ variable "api_key" {
 }
 
 # VM Settings, sjc == Silicon Valley:
-variable "os_name" { default = "Ubuntu 20.04 x64" }
+variable "image_name" { default = "Ubuntu 20.04 x64" }
 variable "region" { default = "sjc" }
 variable "vm_size" { default = "vc2-1c-1gb" }
 variable "public_iface" { default = "enp1s0" }
@@ -47,7 +47,7 @@ provider "vultr" {
 data "vultr_os" "tf_os" {
   filter {
     name   = "name"
-    values = [var.os_name]
+    values = [var.image_name]
   }
 }
 

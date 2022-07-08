@@ -5,7 +5,7 @@ variable "location" { default = "australiaeast" }
 variable "vm_size" { default = "Standard_A1_v2" }
 
 variable "image_publisher" { default = "Canonical" }
-variable "image_type" { default = "0001-com-ubuntu-server-focal" }
+variable "image_name" { default = "0001-com-ubuntu-server-focal" }
 variable "image_version" { default = "20_04-lts" }
 variable "public_iface" { default = "eth0" }
 
@@ -180,7 +180,7 @@ resource "azurerm_linux_virtual_machine" "tf_vm" {
 
   source_image_reference {
     publisher = var.image_publisher
-    offer     = var.image_type
+    offer     = var.image_name
     sku       = var.image_version
     version   = "latest"
   }

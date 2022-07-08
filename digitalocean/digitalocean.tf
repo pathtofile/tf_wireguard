@@ -12,7 +12,13 @@ variable "vm_size" {
   default  = "s-1vcpu-1gb"
   nullable = false
 }
-variable "image_name" { default = "ubuntu-20-04-x64" }
+variable "image_name" {
+  default  = "ubuntu-20-04-x64"
+  nullable = false
+}
+variable "image_publisher" { default = "unused" }
+variable "image_version" { default = "unused" }
+
 variable "public_iface" { default = "eth0" }
 
 # Cloud Init settings

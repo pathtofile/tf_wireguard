@@ -7,7 +7,13 @@ variable "api_key" {
 }
 
 # VM Settings, sjc == Silicon Valley:
-variable "image_name" { default = "Ubuntu 20.04 x64" }
+variable "image_name" {
+  default  = "Ubuntu 20.04 x64"
+  nullable = false
+}
+variable "image_publisher" { default = "unused" }
+variable "image_version" { default = "unused" }
+
 variable "region" { default = "sjc" }
 variable "vm_size" {
   default  = "vc2-1c-1gb"

@@ -18,8 +18,16 @@ variable "vm_size" {
   default  = "VM.Standard.E2.1.Micro"
   nullable = false
 }
-variable "image_name" { default = "Canonical Ubuntu" }
-variable "image_version" { default = "20.04" }
+variable "image_name" {
+  default  = "Canonical Ubuntu"
+  nullable = false
+}
+variable "image_version" {
+  default  = "20.04"
+  nullable = false
+}
+variable "image_publisher" { default = "unused" }
+
 variable "public_iface" { default = "ens3" }
 
 # Cloud Init settings

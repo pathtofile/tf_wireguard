@@ -7,9 +7,18 @@ variable "vm_size" {
   nullable = false
 }
 
-variable "image_publisher" { default = "Canonical" }
-variable "image_name" { default = "0001-com-ubuntu-server-focal" }
-variable "image_version" { default = "20_04-lts" }
+variable "image_publisher" {
+  default  = "Canonical"
+  nullable = false
+}
+variable "image_name" {
+  default  = "0001-com-ubuntu-server-focal"
+  nullable = false
+}
+variable "image_version" {
+  default  = "20_04-lts"
+  nullable = false
+}
 variable "public_iface" { default = "eth0" }
 
 # Cloud Init settings

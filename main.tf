@@ -9,12 +9,18 @@ module "mod" {
   wg_port          = var.wg_port
   location         = var.location
   vm_size          = var.vm_size
+  image_publisher  = var.image_publisher
+  image_name       = var.image_name
+  image_version    = var.image_version
 }
 
 # VM Settings:
 variable "init_script_template" { default = "cloud_init.yml.tftpl" }
 variable "location" { type = string }
 variable "vm_size" { default = null }
+variable "image_publisher" { default = null }
+variable "image_name" { default = null }
+variable "image_version" { default = null }
 
 # SSH settings:
 variable "admin_username" { default = "ubuntu" }

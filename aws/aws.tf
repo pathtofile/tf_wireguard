@@ -8,8 +8,15 @@ variable "vm_size" {
   nullable = false
 }
 
-variable "image_publisher" { default = "679593333241" }
-variable "image_name" { default = "ubuntu-minimal/images/hvm-ssd/ubuntu-focal-20.04-amd64-*" }
+variable "image_publisher" {
+  default  = "679593333241"
+  nullable = false
+}
+variable "image_name" {
+  default  = "ubuntu-minimal/images/hvm-ssd/ubuntu-focal-20.04-amd64-*"
+  nullable = false
+}
+variable "image_version" { default = "unused" }
 variable "public_iface" { default = "eth0" }
 
 # Cloud Init settings

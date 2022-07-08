@@ -1,5 +1,5 @@
 module "mod" {
-  source = "./digitalocean"
+  source = "./aws"
 
   admin_username       = var.admin_username
   ssh_key_pub          = var.ssh_key_pub

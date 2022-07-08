@@ -1,16 +1,26 @@
 # ------------------------------------------------------
 # ------------------------------------------------------
 # OCI Settings
-variable "tenancy_ocid" {
-  type      = string
+variable "api_key" {
+  type = object({
+    tenancy_ocid = string
+    user_ocid = string
+    api_fingerprint = string
+    api_key_pri = string
+  })
   sensitive = true
+  nullable = false
 }
-variable "user_ocid" {
-  type      = string
-  sensitive = true
-}
-variable "api_fingerprint" { type = string }
-variable "api_key_pri" { type = string }
+# variable "tenancy_ocid" {
+#   type      = string
+#   sensitive = true
+# }
+# variable "user_ocid" {
+#   type      = string
+#   sensitive = true
+# }
+# variable "api_fingerprint" { type = string }
+# variable "api_key_pri" { type = string }
 
 # VM Settings:
 variable "location" { default = "ap-sydney-1" }
@@ -46,22 +56,21 @@ variable "wg_psk" {
 
 # Unused:
 variable "image_publisher" { default = null }
-variable "api_key" { default = null }
 
 # ------------------------------------------------------
 # ------------------------------------------------------
 
 provider "oci" {
   region           = var.location
-  tenancy_ocid     = var.tenancy_ocid
-  user_ocid        = var.user_ocid
-  fingerprint      = var.api_fingerprint
-  private_key_path = var.api_key_pri
+  tenancy_ocid     = var.api_key.tenancy_ocid
+  user_ocid        = var.api_key.user_ocid
+  fingerprint      = var.api_key.api_fingerprint
+  private_key_path = var.api_key.api_key_pri
 }
 
 # See https://docs.oracle.com/iaas/images/
 data "oci_core_images" "tf_image" {
-  compartment_id           = var.tenancy_ocid
+  compartment_id           = var.api_key.tenancy_ocid
   operating_system         = var.image_name
   operating_system_version = var.image_version
   shape                    = var.vm_size
@@ -70,13 +79,13 @@ data "oci_core_images" "tf_image" {
 }
 
 data "oci_identity_availability_domain" "tf_ad" {
-  compartment_id = var.tenancy_ocid
+  compartment_id = var.api_key.tenancy_ocid
   ad_number      = 1
 }
 
 resource "oci_core_virtual_network" "tf_vcn" {
   cidr_block     = "172.16.0.0/16"
-  compartment_id = var.tenancy_ocid
+  compartment_id = var.api_key.tenancy_ocid
   display_name   = "testVCN"
   dns_label      = "testvcn"
 }
@@ -86,20 +95,20 @@ resource "oci_core_subnet" "test_subnet" {
   display_name      = "testSubnet"
   dns_label         = "testsubnet"
   security_list_ids = [oci_core_security_list.tf_seclist.id]
-  compartment_id    = var.tenancy_ocid
+  compartment_id    = var.api_key.tenancy_ocid
   vcn_id            = oci_core_virtual_network.tf_vcn.id
   route_table_id    = oci_core_route_table.tf_route.id
   dhcp_options_id   = oci_core_virtual_network.tf_vcn.default_dhcp_options_id
 }
 
 resource "oci_core_internet_gateway" "tf_gateway" {
-  compartment_id = var.tenancy_ocid
+  compartment_id = var.api_key.tenancy_ocid
   display_name   = "testIG"
   vcn_id         = oci_core_virtual_network.tf_vcn.id
 }
 
 resource "oci_core_route_table" "tf_route" {
-  compartment_id = var.tenancy_ocid
+  compartment_id = var.api_key.tenancy_ocid
   vcn_id         = oci_core_virtual_network.tf_vcn.id
   display_name   = "testRouteTable"
 
@@ -111,7 +120,7 @@ resource "oci_core_route_table" "tf_route" {
 }
 
 resource "oci_core_security_list" "tf_seclist" {
-  compartment_id = var.tenancy_ocid
+  compartment_id = var.api_key.tenancy_ocid
   vcn_id         = oci_core_virtual_network.tf_vcn.id
   display_name   = "testSecurityList"
 
@@ -159,7 +168,7 @@ resource "oci_core_security_list" "tf_seclist" {
 
 resource "oci_core_instance" "tf_instance" {
   availability_domain = data.oci_identity_availability_domain.tf_ad.name
-  compartment_id      = var.tenancy_ocid
+  compartment_id      = var.api_key.tenancy_ocid
   display_name        = "tfinstance"
   shape               = var.vm_size
 

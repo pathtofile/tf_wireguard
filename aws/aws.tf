@@ -6,7 +6,7 @@ variable "location" { default = "us-west-1" }
 variable "vm_size" { default = "t2.micro" }
 
 variable "image_publisher" { default = "679593333241" }
-variable "image_name" { default = "ubuntu-minimal/images/hvm-ssd/ubuntu-focal-20.04-*" }
+variable "image_name" { default = "ubuntu-minimal/images/hvm-ssd/ubuntu-focal-20.04-amd64-*" }
 variable "public_iface" { default = "eth0" }
 
 # Cloud Init settings

@@ -16,7 +16,6 @@ variable "image_name" {
   default  = "ubuntu-minimal/images/hvm-ssd/ubuntu-focal-20.04-amd64-*"
   nullable = false
 }
-variable "image_version" { default = "unused" }
 variable "public_iface" { default = "eth0" }
 
 # Cloud Init settings
@@ -34,6 +33,10 @@ variable "wg_psk" {
   type      = string
   sensitive = true
 }
+
+# Unused:
+variable "image_version" { default = null }
+variable "api_key" { default = null }
 
 # ------------------------------------------------------
 # ------------------------------------------------------

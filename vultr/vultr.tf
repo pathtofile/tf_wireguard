@@ -11,8 +11,6 @@ variable "image_name" {
   default  = "Ubuntu 20.04 x64"
   nullable = false
 }
-variable "image_publisher" { default = "unused" }
-variable "image_version" { default = "unused" }
 
 variable "region" { default = "sjc" }
 variable "vm_size" {
@@ -36,6 +34,11 @@ variable "wg_psk" {
   type      = string
   sensitive = true
 }
+
+
+# Unused:
+variable "image_publisher" { default = null }
+variable "image_version" { default = null }
 
 # ------------------------------------------------------
 # ------------------------------------------------------

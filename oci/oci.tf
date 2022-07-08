@@ -26,8 +26,6 @@ variable "image_version" {
   default  = "20.04"
   nullable = false
 }
-variable "image_publisher" { default = "unused" }
-
 variable "public_iface" { default = "ens3" }
 
 # Cloud Init settings
@@ -45,6 +43,10 @@ variable "wg_psk" {
   type      = string
   sensitive = true
 }
+
+# Unused:
+variable "image_publisher" { default = null }
+variable "api_key" { default = null }
 
 # ------------------------------------------------------
 # ------------------------------------------------------

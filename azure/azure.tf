@@ -36,6 +36,10 @@ variable "wg_psk" {
   type      = string
   sensitive = true
 }
+
+# Unused:
+variable "api_key" { default = null }
+
 # ------------------------------------------------------
 # ------------------------------------------------------
 

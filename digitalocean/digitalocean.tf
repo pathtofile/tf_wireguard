@@ -1,7 +1,7 @@
 # ------------------------------------------------------
 # ------------------------------------------------------
 # Access Settings, set  env variable to TF_VAR_xxxx:
-variable "digitalocean_token" {
+variable "api_key" {
   type      = string
   sensitive = true
 }
@@ -16,8 +16,6 @@ variable "image_name" {
   default  = "ubuntu-20-04-x64"
   nullable = false
 }
-variable "image_publisher" { default = "unused" }
-variable "image_version" { default = "unused" }
 
 variable "public_iface" { default = "eth0" }
 
@@ -37,6 +35,10 @@ variable "wg_psk" {
   sensitive = true
 }
 
+# Unused:
+variable "image_publisher" { default = null }
+variable "image_version" { default = null }
+
 # ------------------------------------------------------
 # ------------------------------------------------------
 
@@ -51,7 +53,7 @@ terraform {
 
 # Set token
 provider "digitalocean" {
-  token = var.digitalocean_token
+  token = var.api_key
 }
 
 # Create a new SSH key

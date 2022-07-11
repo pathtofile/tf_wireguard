@@ -3,7 +3,7 @@
 # VM Settings:
 variable "location" { default = "australiaeast" }
 variable "vm_size" {
-  default  = "Standard_A1_v2"
+  default  = "Standard_B1ms"
   nullable = false
 }
 

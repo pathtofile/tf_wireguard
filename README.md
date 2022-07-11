@@ -20,6 +20,7 @@ Simple Terraform Scripts to setup a WireGuard server on various cloud providers.
   - [Why should I use this?](#why-should-i-use-this)
   - [Why use this over a commercial VPN provider](#why-use-this-over-a-commercial-vpn-provider)
 - [Why use this of Algo?](#why-use-this-of-algo)
+- [Alternate Use - Single VMs](#alternate-use---single-vms)
 
 # Overview
 Terraform will provision
@@ -153,7 +154,15 @@ location = "us-west-1"
 
 # Running
 ## Deploy Server
-Set variables according to above, then navigate the the prover folder and run terraform.
+Set variables according to above, then open `main.tf`, and set the `source` line in the module
+to match the name of the cloud provider you wish the deploy to. e.g. to use Azure:
+```terraform
+module "mod" {
+  source = "./azure"
+  # ....
+}
+# ....
+```
 
 To deplopy to AWS, you also have to set the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables
 with you access key.
@@ -166,15 +175,17 @@ e.g. for AWS:
 $Env:AWS_ACCESS_KEY_ID = "..."
 $Env:TF_VAR_xxx = "..."
 
-# Either enter the provider's directory and run:
-cd .\aws
+# Run:
+terraform init
 terraform plan -out test.apply.tfplan
 terraform apply test.apply.tfplan
 
-# OR run it from the root directory. e.g. for a 'AWS' with a '.tfvars' file
-# also in the root folder:
-terraform -chdir=aws plan -var-file="../vars.tfvars" -out test.apply.tfplan
-terraform -chdir=aws apply test.apply.tfplan
+# OR set a specific '.tfvars' file:
+terraform plan -var-file="../vars.tfvars" -out test.apply.tfplan
+terraform apply test.apply.tfplan
+
+# OR in a single line
+terraform apply -auto-approve
 ```
 
 ## Start local client
@@ -187,13 +198,12 @@ But just keep trying.
 
 On Linux:
 ```bash
-# Select the cloud provider and private ssh key that corresponds to
+# Select the private ssh key that corresponds to
 # the 'ssh_key_pub' used to create the wireguard server
-# e.g. for AWS:
-python3 generate_config.py aws ~/.ssh/id_rsa > /etc/wireguard/wg0.conf
+python3 generate_config.py ~/.ssh/id_rsa > /etc/wireguard/wg0.conf
 
 # If not already running as root, do:
-sudo -E bash -c 'python3 generate_config.py aws ~/.ssh/id_rsa > /etc/wireguard/wg0.conf'
+sudo -E bash -c 'python3 generate_config.py ~/.ssh/id_rsa > /etc/wireguard/wg0.conf'
 
 # Lock down config as it contains private keys
 sudo chmod go= /etc/wireguard/wg0.conf
@@ -210,7 +220,7 @@ ip route get 1.1.1.1
 On Windows, outpuit the config to a `.conf` file, then in the WireGuard UI select
 `Import tunnel from file` and select the generated config file:
 ```powershell
-python generate_config.py aws C:\Users\micro\.ssh\id_rsa > wg0.conf
+python generate_config.py C:\Users\micro\.ssh\id_rsa > wg0.conf
 ```
 
 ## Alternate client: Vagrant
@@ -224,14 +234,13 @@ This repo comes with a basic Vagrant Script to quickly spin a Ubuntu
 VM, and install and setup WireGuard in it:
 ```bash
 # First Use terraform to create the WG server
-cd ./aws
-terraform apply --auto-approve
-cd ..
+terraform apply -auto-approve
 
 # Then generate the config file, but save it to the root directory
 python3 generate_config.py aws ~/.ssh/id_rsa > wg0.conf
 
 # Now use Vagrant to create the local vm
+cd vagrant
 vagrant up
 
 # Connect to the local vm and test everything is working
@@ -242,12 +251,7 @@ curl ipv4.icanhazip.com
 # Cleanup
 To shutdown server, just use terraform:
 ```bash
-# Either enter the provider's directory and run:
-cd ./azure
 terraform destroy -auto-approve
-
-# OR run it from the root directory
-terraform -chdir=aws destroy -var-file="../vars.tfvars" -auto-approve
 ```
 
 On Client, delete config and keys
@@ -280,3 +284,37 @@ includinf QR Codes for mobile devices, enabling IKEv2, deployment options for mo
 For my personal use, however, I found it to do a little *too* much, and digging into the code to understand exactly what it
 does was difficult at times. I wanted to create a project that I could understand how it worked, and did the minimal amount
 to create a secure-enough temporary VPN endpoint.
+
+# Alternate Use - Single VMs
+I also use this project to quickly spin up a basic single VM on verious cloud providers and regions.
+
+To do this, I use a tf variable file like this, to create a VM or a specific type, and use a different cloud-init that
+only sets up the admin acccount, and not any firewall or wireguard configs:
+```conf
+# Basic info
+admin_username       = "test"
+ssh_key_pub          = "~/.ssh/cloud.pub"
+ssh_port             = 22
+location             = "us-west-1"
+init_script_template = "cloud_init_basic.yml.tftpl"
+
+# Select Image
+## Ubuntu:
+# image_publisher = "679593333241"
+# image_name      = "ubuntu-minimal/images/hvm-ssd/ubuntu-focal-20.04-amd64-*"
+# image_version   = null
+
+## Amazon Linux:
+# image_publisher = "137112412989"
+# image_name      = "amzn2-ami-hvm-*-x86_64-gp2"
+# image_version   = null
+
+## Centos:
+# image_publisher = "679593333241"
+# image_name      = "CentOS-8*x86_64*"
+# image_version   = null
+
+# These get ignored
+wg_client_pubkey = "aaaa"
+wg_psk           = "aaaa"
+```

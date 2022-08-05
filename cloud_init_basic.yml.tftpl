@@ -7,3 +7,25 @@ users:
     ssh_authorized_keys:
       - ${admin_ssh_pubkey}
     sudo: ALL=(ALL) NOPASSWD:ALL
+
+write_files:
+  # Configure SSHd
+  - path: /etc/ssh/sshd_config
+    owner: root:root
+    permissions: "0644"
+    append: true
+    content: |
+      PasswordAuthentication no
+      PubkeyAuthentication yes
+      AuthenticationMethods publickey
+      PermitRootLogin no
+      AllowUsers ${admin_username}
+      Port ${ssh_port}
+
+# Setup SSH config and start
+runcmd:
+ # Ensure iptables works for ssh, which might be a different port
+ - sudo bash -c 'iptables -D INPUT -i ${public_iface} -p tcp --dport 22 -j ACCEPT || true'
+ - sudo iptables -I INPUT 1 -i ${public_iface} -p tcp --dport ${ssh_port} -j ACCEPT
+ # Restart sshd to pick up new config
+ - sudo systemctl restart ssh

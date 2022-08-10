@@ -23,6 +23,7 @@ def main():
     parser = argparse.ArgumentParser("Generate WireGuard config")
     parser.add_argument(
         "--ssh-key",
+        "-s",
         dest="ssh_key",
         default=Path(os.environ[HOME_VAR], ".ssh", "cloud").absolute(),
         help="path to SSH private key, used to connect to WG Server",

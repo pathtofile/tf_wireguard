@@ -1,5 +1,10 @@
 #cloud-config
 
+# Install required packages
+packages:
+ - net-tools
+ - iptables
+
 # Create new admin user
 users:
   - name: ${admin_username}
@@ -22,10 +27,23 @@ write_files:
       AllowUsers ${admin_username}
       Port ${ssh_port}
 
-# Setup SSH config and start
+# Setup Config and start
 runcmd:
+ # Setup firewall, just in case cloud provider firewall fails/is disabled
+ - sudo ufw allow ${ssh_port}/tcp
+%{ for extra_port in extra_open_ports ~}
+ - sudo ufw allow ${extra_port}/tcp
+%{ endfor ~}
+ - sudo ufw enable
  # Ensure iptables works for ssh, which might be a different port
  - sudo bash -c 'iptables -D INPUT -i ${public_iface} -p tcp --dport 22 -j ACCEPT || true'
  - sudo iptables -I INPUT 1 -i ${public_iface} -p tcp --dport ${ssh_port} -j ACCEPT
+ # Add IPtables rules for anything else
+%{ for extra_port in extra_open_ports ~}
+ - sudo iptables -I INPUT 1 -i ${public_iface} -p tcp --dport ${extra_port} -j ACCEPT
+%{ endfor ~}
  # Restart sshd to pick up new config
  - sudo systemctl restart ssh
+%{ if dynamic_dns_command != "" ~}
+ - ${dynamic_dns_command}
+%{ endif ~}

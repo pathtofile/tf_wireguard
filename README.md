@@ -202,10 +202,14 @@ On Linux:
 ```bash
 # Select the private ssh key that corresponds to
 # the 'ssh_key_pub' used to create the wireguard server
-python3 generate_config.py ~/.ssh/id_rsa > /etc/wireguard/wg0.conf
+python generate_config.py --ssh-key ~/.ssh/id_rsa > /etc/wireguard/wg0.conf
 
 # If not already running as root, do:
-sudo -E bash -c 'python3 generate_config.py ~/.ssh/id_rsa > /etc/wireguard/wg0.conf'
+sudo -E bash -c 'python3 generate_config.py --ssh-key ~/.ssh/id_rsa > /etc/wireguard/wg0.conf'
+
+# You can also specify the Dynamic DNS name to put in the config
+# instead of the IP Address
+python generate_config.py --ssh-key ~/.ssh/id_rsa --ddns-hostname wg.example.com > /etc/wireguard/wg0.conf
 
 # Lock down config as it contains private keys
 sudo chmod go= /etc/wireguard/wg0.conf
@@ -222,7 +226,11 @@ ip route get 1.1.1.1
 On Windows, outpuit the config to a `.conf` file, then in the WireGuard UI select
 `Import tunnel from file` and select the generated config file:
 ```powershell
-python generate_config.py C:\Users\micro\.ssh\id_rsa > wg0.conf
+python generate_config.py --ssh-key C:\Users\username\.ssh\id_rsa > wg0.conf
+
+# You can also specify the Dynamic DNS name to put in the config
+# instead of the IP Address
+python generate_config.py --ssh-key C:\Users\username\.ssh\id_rsa--ddns-hostname wg.example.com > wg0.conf
 ```
 
 ## Alternate client: Vagrant

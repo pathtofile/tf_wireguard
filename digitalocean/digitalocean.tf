@@ -49,6 +49,9 @@ variable "extra_open_ports" {
   default = []
 }
 
+# DynamicDNS settings:
+variable "dynamic_dns_command" { default = "" }
+
 # Unused:
 variable "image_publisher" { default = null }
 variable "image_version" { default = null }
@@ -138,14 +141,15 @@ resource "digitalocean_droplet" "tf_vm" {
   user_data = templatefile(
     var.init_script_template,
     {
-      wg_client_pubkey  = var.wg_client_pubkey,
-      wg_psk            = var.wg_psk,
-      admin_username    = var.admin_username,
-      admin_ssh_pubkey  = file(var.ssh_key_pub),
-      ssh_port          = var.ssh_port,
-      wg_port           = var.wg_port,
-      public_iface      = var.public_iface,
-      enable_ssh_access = var.enable_ssh_access,
+      wg_client_pubkey    = var.wg_client_pubkey,
+      wg_psk              = var.wg_psk,
+      admin_username      = var.admin_username,
+      admin_ssh_pubkey    = file(var.ssh_key_pub),
+      ssh_port            = var.ssh_port,
+      wg_port             = var.wg_port,
+      public_iface        = var.public_iface,
+      enable_ssh_access   = var.enable_ssh_access,
+      dynamic_dns_command = var.dynamic_dns_command,
   })
 
 }

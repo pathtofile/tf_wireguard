@@ -42,6 +42,12 @@ def main():
         default=Path(ROOT_DIR, "psk.key"),
         help="Path to wg client preshared key",
     )
+    parser.add_argument(
+        "--ddns-hostname",
+        "-d",
+        dest="ddns_hostname",
+        help="Use this hostname instead of the IP in the config file. Useful when using dynamic DNS.",
+    )
 
     args = parser.parse_args()
     with open(args.key_pri, "r") as f:
@@ -78,6 +84,9 @@ def main():
     srv_pubkey = proc.stdout.decode().strip()
 
     # Now we can generate and print the config file
+    wg_ip = srv_ip
+    if args.ddns_hostname is not None:
+        wg_ip = args.ddns_hostname
     config = textwrap.dedent(
         f"""\
         [Interface]
@@ -89,7 +98,7 @@ def main():
         PublicKey = {srv_pubkey}
         PresharedKey = {key_psk}
         AllowedIPs = 0.0.0.0/0
-        Endpoint = {srv_ip}:{wg_port}
+        Endpoint = {wg_ip}:{wg_port}
         PersistentKeepalive = 25\
         """
     )

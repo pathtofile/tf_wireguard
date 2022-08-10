@@ -107,3 +107,6 @@ runcmd:
  - sudo bash -c 'WG_PRI=$(cat /etc/wireguard/private.key); sed -i "s@WG_SRV_PRI@$WG_PRI@g" /etc/wireguard/wg0.conf'
  - sudo systemctl enable wg-quick@wg0.service
  - sudo systemctl start wg-quick@wg0.service
+%{ if dynamic_dns_command != "" ~}
+ - ${dynamic_dns_command}
+%{ endif ~}

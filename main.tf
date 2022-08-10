@@ -16,6 +16,7 @@ module "mod" {
   api_key              = var.api_key
   extra_open_ports     = var.extra_open_ports
   enable_ssh_access    = var.enable_ssh_access
+  dynamic_dns_command  = var.dynamic_dns_command
 }
 
 # VM Settings:
@@ -52,7 +53,7 @@ variable "extra_open_ports" {
 }
 
 # DynamicDNS settings:
-variable "dynamic_dns_url" { default = null }
+variable "dynamic_dns_command" { default = "" }
 
 # Output
 output "username" {

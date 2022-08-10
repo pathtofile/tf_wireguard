@@ -14,33 +14,32 @@ from pathlib import Path
 import subprocess
 import textwrap
 
-ROOT_DIR = os.path.dirname(__file__)
-
+ROOT_DIR = Path(__file__).parent
+HOME_VAR = "HOME"
+if os.name == "nt":
+    HOME_VAR = "HOMEPATH"
 
 def main():
     parser = argparse.ArgumentParser("Generate WireGuard config")
     parser.add_argument(
-        "--ssh_key",
-        default=Path(os.environ["HOMEPATH"], ".ssh", "cloud").absolute(),
+        "--ssh-key",
+        dest="ssh_key",
+        default=Path(os.environ[HOME_VAR], ".ssh", "cloud").absolute(),
         help="path to SSH private key, used to connect to WG Server",
     )
 
-    if os.name == "nt":
-        default_key_folder = ROOT_DIR
-    else:
-        default_key_folder = "/etc/wireguard/"
     parser.add_argument(
         "--private-key-path",
         "-pri",
         dest="key_pri",
-        default=os.path.join(default_key_folder, "private.key"),
+        default=Path(ROOT_DIR, "private.key"),
         help="Path to wg client private key",
     )
     parser.add_argument(
         "--preshared-key-path",
         "-psk",
         dest="key_psk",
-        default=os.path.join(default_key_folder, "psk.key"),
+        default=Path(ROOT_DIR, "psk.key"),
         help="Path to wg client preshared key",
     )
 

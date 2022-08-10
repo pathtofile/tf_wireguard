@@ -7,7 +7,10 @@ variable "api_key" {
 }
 
 # VM settings:
-variable "location" { default = "sfo3" }
+variable "location" {
+  default  = "sfo3"
+  nullable = false
+}
 variable "vm_size" {
   default  = "s-1vcpu-1gb"
   nullable = false
@@ -26,6 +29,11 @@ variable "init_script_template" { default = "cloud_init.yml.tftpl" }
 variable "admin_username" { default = "ubuntu" }
 variable "ssh_key_pub" { default = "~/.ssh/id_rsa.pub" }
 variable "ssh_port" { default = 22 }
+# Enable ablility to log into server using ssh
+variable "enable_ssh_access" {
+  type    = bool
+  default = false
+}
 
 # Wireguard settings:
 variable "wg_port" { default = 51820 }
@@ -33,6 +41,12 @@ variable "wg_client_pubkey" { type = string }
 variable "wg_psk" {
   type      = string
   sensitive = true
+}
+
+# Extra ports
+variable "extra_open_ports" {
+  type    = list(any)
+  default = []
 }
 
 # Unused:
@@ -85,6 +99,16 @@ resource "digitalocean_firewall" "tf_firewall" {
     source_addresses = ["0.0.0.0/0", "::/0"]
   }
 
+  # Any extra TCP Ports to open
+  dynamic "inbound_rule" {
+    for_each = var.extra_open_ports
+    content {
+      protocol         = "tcp"
+      port_range       = tostring(inbound_rule.value)
+      source_addresses = ["0.0.0.0/0", "::/0"]
+    }
+  }
+
   outbound_rule {
     protocol              = "tcp"
     port_range            = "1-65535"
@@ -114,13 +138,14 @@ resource "digitalocean_droplet" "tf_vm" {
   user_data = templatefile(
     var.init_script_template,
     {
-      wg_client_pubkey = var.wg_client_pubkey,
-      wg_psk           = var.wg_psk,
-      admin_username   = var.admin_username,
-      admin_ssh_pubkey = file(var.ssh_key_pub),
-      ssh_port         = var.ssh_port,
-      wg_port          = var.wg_port,
-      public_iface     = var.public_iface
+      wg_client_pubkey  = var.wg_client_pubkey,
+      wg_psk            = var.wg_psk,
+      admin_username    = var.admin_username,
+      admin_ssh_pubkey  = file(var.ssh_key_pub),
+      ssh_port          = var.ssh_port,
+      wg_port           = var.wg_port,
+      public_iface      = var.public_iface,
+      enable_ssh_access = var.enable_ssh_access,
   })
 
 }

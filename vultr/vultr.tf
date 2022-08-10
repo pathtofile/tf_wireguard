@@ -6,13 +6,16 @@ variable "api_key" {
   sensitive = true
 }
 
-# VM Settings, sjc == Silicon Valley:
+# VM Settings
 variable "image_name" {
   default  = "Ubuntu 20.04 x64"
   nullable = false
 }
 
-variable "region" { default = "sjc" }
+variable "location" {
+  default  = "sjc" # Silicon Valley  
+  nullable = false
+}
 variable "vm_size" {
   default  = "vc2-1c-1gb"
   nullable = false
@@ -26,6 +29,11 @@ variable "init_script_template" { default = "cloud_init.yml.tftpl" }
 variable "admin_username" { default = "ubuntu" }
 variable "ssh_key_pub" { type = string }
 variable "ssh_port" { default = 22 }
+# Enable ablility to log into server using ssh
+variable "enable_ssh_access" {
+  type    = bool
+  default = false
+}
 
 # Wireguard settings:
 variable "wg_port" { default = 51820 }
@@ -35,6 +43,11 @@ variable "wg_psk" {
   sensitive = true
 }
 
+# Extra ports
+variable "extra_open_ports" {
+  type    = list(any)
+  default = []
+}
 
 # Unused:
 variable "image_publisher" { default = null }
@@ -84,23 +97,35 @@ resource "vultr_firewall_rule" "tf_fw_wg" {
   port              = tostring(var.wg_port)
 }
 
+# Any extra TCP Ports to open
+resource "vultr_firewall_rule" "tf_fw_extra" {
+  for_each          = var.extra_open_ports
+  firewall_group_id = vultr_firewall_group.tf_fw.id
+  subnet            = "0.0.0.0"
+  subnet_size       = 0
+  ip_type           = "v4"
+  protocol          = "tcp"
+  port              = tostring(each.value)
+}
+
 # Create Instance
 resource "vultr_instance" "tf_instance" {
   hostname    = "tfinstance"
   enable_ipv6 = false
   plan        = var.vm_size
-  region      = var.region
+  region      = var.location
   os_id       = data.vultr_os.tf_os.id
   user_data = templatefile(
     var.init_script_template,
     {
-      wg_client_pubkey = var.wg_client_pubkey,
-      wg_psk           = var.wg_psk,
-      admin_username   = var.admin_username,
-      admin_ssh_pubkey = file(var.ssh_key_pub),
-      ssh_port         = var.ssh_port,
-      wg_port          = var.wg_port,
-      public_iface     = var.public_iface
+      wg_client_pubkey  = var.wg_client_pubkey,
+      wg_psk            = var.wg_psk,
+      admin_username    = var.admin_username,
+      admin_ssh_pubkey  = file(var.ssh_key_pub),
+      ssh_port          = var.ssh_port,
+      wg_port           = var.wg_port,
+      public_iface      = var.public_iface,
+      enable_ssh_access = var.enable_ssh_access
   })
   firewall_group_id = vultr_firewall_group.tf_fw.id
 }

@@ -3,27 +3,20 @@
 # OCI Settings
 variable "api_key" {
   type = object({
-    tenancy_ocid = string
-    user_ocid = string
+    tenancy_ocid    = string
+    user_ocid       = string
     api_fingerprint = string
-    api_key_pri = string
+    api_key_pri     = string
   })
   sensitive = true
-  nullable = false
+  nullable  = false
 }
-# variable "tenancy_ocid" {
-#   type      = string
-#   sensitive = true
-# }
-# variable "user_ocid" {
-#   type      = string
-#   sensitive = true
-# }
-# variable "api_fingerprint" { type = string }
-# variable "api_key_pri" { type = string }
 
 # VM Settings:
-variable "location" { default = "ap-sydney-1" }
+variable "location" {
+  default  = "ap-sydney-1"
+  nullable = false
+}
 variable "vm_size" {
   default  = "VM.Standard.E2.1.Micro"
   nullable = false
@@ -45,6 +38,11 @@ variable "init_script_template" { default = "cloud_init.yml.tftpl" }
 variable "admin_username" { default = "ubuntu" }
 variable "ssh_key_pub" { type = string }
 variable "ssh_port" { default = 22 }
+# Enable ablility to log into server using ssh
+variable "enable_ssh_access" {
+  type    = bool
+  default = false
+}
 
 # Wireguard settings:
 variable "wg_port" { default = 51820 }
@@ -52,6 +50,12 @@ variable "wg_client_pubkey" { type = string }
 variable "wg_psk" {
   type      = string
   sensitive = true
+}
+
+# Extra ports
+variable "extra_open_ports" {
+  type    = list(any)
+  default = []
 }
 
 # Unused:
@@ -154,6 +158,20 @@ resource "oci_core_security_list" "tf_seclist" {
     }
   }
 
+  # Any extra TCP Ports to open
+  dynamic "ingress_security_rules" {
+    for_each = var.extra_open_ports
+    content {
+      protocol = "6"
+      source   = "0.0.0.0/0"
+
+      tcp_options {
+        max = tostring(ingress_security_rules.value)
+        min = tostring(ingress_security_rules.value)
+      }
+    }
+  }
+
   # WireGuard over UDP
   ingress_security_rules {
     protocol = "17"
@@ -189,13 +207,14 @@ resource "oci_core_instance" "tf_instance" {
     user_data = base64encode(templatefile(
       var.init_script_template,
       {
-        wg_client_pubkey = var.wg_client_pubkey,
-        wg_psk           = var.wg_psk,
-        admin_username   = var.admin_username,
-        admin_ssh_pubkey = file(var.ssh_key_pub),
-        ssh_port         = var.ssh_port,
-        wg_port          = var.wg_port,
-        public_iface     = var.public_iface
+        wg_client_pubkey  = var.wg_client_pubkey,
+        wg_psk            = var.wg_psk,
+        admin_username    = var.admin_username,
+        admin_ssh_pubkey  = file(var.ssh_key_pub),
+        ssh_port          = var.ssh_port,
+        wg_port           = var.wg_port,
+        public_iface      = var.public_iface,
+        enable_ssh_access = var.enable_ssh_access,
     }))
   }
 }

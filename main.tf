@@ -14,6 +14,8 @@ module "mod" {
   image_version        = var.image_version
   init_script_template = var.init_script_template
   api_key              = var.api_key
+  extra_open_ports     = var.extra_open_ports
+  enable_ssh_access    = var.enable_ssh_access
 }
 
 # VM Settings:
@@ -29,6 +31,11 @@ variable "api_key" { default = null }
 variable "admin_username" { default = "ubuntu" }
 variable "ssh_key_pub" { default = "~/.ssh/id_rsa.pub" }
 variable "ssh_port" { default = 22 }
+# Enable ablility to log into server using ssh
+variable "enable_ssh_access" {
+  type    = bool
+  default = false
+}
 
 # Wireguard settings:
 variable "wg_port" { default = 51820 }
@@ -37,6 +44,15 @@ variable "wg_psk" {
   type      = string
   sensitive = true
 }
+
+# HTTPS settings
+variable "extra_open_ports" {
+  type    = list(any)
+  default = []
+}
+
+# DynamicDNS settings:
+variable "dynamic_dns_url" { default = null }
 
 # Output
 output "username" {

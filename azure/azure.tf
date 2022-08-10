@@ -1,7 +1,10 @@
 # ------------------------------------------------------
 # ------------------------------------------------------
 # VM Settings:
-variable "location" { default = "australiaeast" }
+variable "location" {
+  default  = "australiaeast"
+  nullable = false
+}
 variable "vm_size" {
   default  = "Standard_B1ms"
   nullable = false
@@ -28,6 +31,11 @@ variable "init_script_template" { default = "cloud_init.yml.tftpl" }
 variable "admin_username" { default = "ubuntu" }
 variable "ssh_key_pub" { default = "~/.ssh/id_rsa.pub" }
 variable "ssh_port" { default = 22 }
+# Enable ablility to log into server using ssh
+variable "enable_ssh_access" {
+  type    = bool
+  default = false
+}
 
 # Wireguard settings:
 variable "wg_port" { default = 51820 }
@@ -35,6 +43,12 @@ variable "wg_client_pubkey" { type = string }
 variable "wg_psk" {
   type      = string
   sensitive = true
+}
+
+# Extra ports
+variable "extra_open_ports" {
+  type    = list(any)
+  default = []
 }
 
 # Unused:
@@ -135,6 +149,23 @@ resource "azurerm_network_security_group" "tf_nsg" {
     destination_address_prefix = "*"
   }
 
+  # Any extra TCP Ports to open
+  dynamic "security_rule" {
+    for_each = var.extra_open_ports
+    content {
+      name                       = "Extra${ingress.value}"
+      priority                   = 1003
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = tostring(ingress.value)
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    }
+
+  }
+
   security_rule {
     name                       = "AllOut"
     priority                   = 100
@@ -213,13 +244,14 @@ resource "azurerm_linux_virtual_machine" "tf_vm" {
   custom_data = base64encode(templatefile(
     var.init_script_template,
     {
-      wg_client_pubkey = var.wg_client_pubkey,
-      wg_psk           = var.wg_psk,
-      admin_username   = var.admin_username,
-      admin_ssh_pubkey = file(var.ssh_key_pub),
-      ssh_port         = var.ssh_port,
-      wg_port          = var.wg_port,
-      public_iface     = var.public_iface
+      wg_client_pubkey  = var.wg_client_pubkey,
+      wg_psk            = var.wg_psk,
+      admin_username    = var.admin_username,
+      admin_ssh_pubkey  = file(var.ssh_key_pub),
+      ssh_port          = var.ssh_port,
+      wg_port           = var.wg_port,
+      public_iface      = var.public_iface,
+      enable_ssh_access = var.enable_ssh_access,
   }))
 
   tags = {

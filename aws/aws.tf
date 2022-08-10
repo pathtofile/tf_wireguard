@@ -2,7 +2,10 @@
 # ------------------------------------------------------
 # VM settings:
 # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html
-variable "location" { default = "us-west-1" }
+variable "location" {
+  default  = "us-west-1"
+  nullable = false
+}
 variable "vm_size" {
   default  = "t2.micro"
   nullable = false
@@ -25,6 +28,11 @@ variable "init_script_template" { default = "cloud_init.yml.tftpl" }
 variable "admin_username" { default = "ubuntu" }
 variable "ssh_key_pub" { default = "~/.ssh/id_rsa.pub" }
 variable "ssh_port" { default = 22 }
+# Enable ablility to log into server using ssh
+variable "enable_ssh_access" {
+  type    = bool
+  default = false
+}
 
 # Wireguard settings:
 variable "wg_port" { default = 51820 }
@@ -32,6 +40,12 @@ variable "wg_client_pubkey" { type = string }
 variable "wg_psk" {
   type      = string
   sensitive = true
+}
+
+# Extra ports
+variable "extra_open_ports" {
+  type    = list(any)
+  default = []
 }
 
 # Unused:
@@ -94,6 +108,17 @@ resource "aws_security_group" "tf_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Any extra TCP Ports to open
+  dynamic "ingress" {
+    for_each = var.extra_open_ports
+    content {
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -122,13 +147,15 @@ resource "aws_instance" "tf_vm" {
   user_data = templatefile(
     var.init_script_template,
     {
-      wg_client_pubkey = var.wg_client_pubkey,
-      wg_psk           = var.wg_psk,
-      admin_username   = var.admin_username,
-      admin_ssh_pubkey = file(var.ssh_key_pub),
-      ssh_port         = var.ssh_port,
-      wg_port          = var.wg_port,
-      public_iface     = var.public_iface
+      wg_client_pubkey  = var.wg_client_pubkey,
+      wg_psk            = var.wg_psk,
+      admin_username    = var.admin_username,
+      admin_ssh_pubkey  = file(var.ssh_key_pub),
+      ssh_port          = var.ssh_port,
+      wg_port           = var.wg_port,
+      public_iface      = var.public_iface,
+      enable_ssh_access = var.enable_ssh_access,
+      extra_open_ports  = var.extra_open_ports,
   })
 
 }

@@ -100,8 +100,7 @@ def main():
         PresharedKey = {key_psk}
         AllowedIPs = 0.0.0.0/0
         Endpoint = {wg_ip}:{wg_port}
-        PersistentKeepalive = 25\
-        """
+        PersistentKeepalive = 25"""
     )
     print(config)
 

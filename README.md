@@ -77,6 +77,7 @@ file, using `TF_VAR_xxx` environment variables, or manually editing the defaults
 | `init_script_template` | The `cloud-init` script to run | [cloud_init.yml.tftpl](cloud_init.yml.tftpl) |
 | `extra_open_ports` | A list of any extra TCP ports to open | empty list, i.e. no other port |
 | `enable_ssh_access` | If true, interactive SSH access will be enabled for the admin user | False |
+| `wg_server_prikey`  | Optional, use static private key for Wireguard server. Otherwise auto-generate a new key | |
 
 ## AWS
 | Variable Name  | Description | Default value |

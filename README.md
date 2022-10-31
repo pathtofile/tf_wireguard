@@ -72,8 +72,8 @@ file, using `TF_VAR_xxx` environment variables, or manually editing the defaults
 | `ssh_key_pub`  | Local path the SSH public key to deploy and use  | ~/.ssh/id_rsa.pub |
 | `ssh_port`  | TCP Port SSH server will listen on  | 22 |
 | `wg_port`  | UDP Port WireGuard server will listen on  | 51820 |
-| `wg_client_pubkey`  | The Client's WireGuard `public.key` | |
-| `wg_psk`  | The Client's WireGuard `psk.key` | |
+| `wg_client_pubkey`  | Path to file containing the client's WireGuard `public.key` | |
+| `wg_psk`  | Path to the file containing the Client's WireGuard `psk.key` | |
 | `init_script_template` | The `cloud-init` script to run | [cloud_init.yml.tftpl](cloud_init.yml.tftpl) |
 | `extra_open_ports` | A list of any extra TCP ports to open | empty list, i.e. no other port |
 | `enable_ssh_access` | If true, interactive SSH access will be enabled for the admin user | False |
@@ -147,8 +147,8 @@ admin_username = "path"
 ssh_key_pub = "~/.ssh/cloud.pub"
 ssh_port = 2222
 wg_port = 5555
-wg_client_pubkey = "aaaaaaa"
-wg_psk = "aaaaa"
+wg_client_pubkey = "public.key"
+wg_psk = "psk.key"
 
 # AWS
 location = "us-west-1"

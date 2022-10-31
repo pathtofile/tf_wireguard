@@ -128,9 +128,9 @@ resource "vultr_instance" "tf_instance" {
   user_data = templatefile(
     var.init_script_template,
     {
-      wg_client_pubkey    = var.wg_client_pubkey,
-      wg_server_prikey    = var.wg_server_prikey,
-      wg_psk              = var.wg_psk,
+      wg_client_pubkey    = file(var.wg_client_pubkey),
+      wg_psk              = file(var.wg_psk),
+      wg_server_prikey    = var.wg_server_prikey != "" ? file(var.wg_server_prikey) : "",
       admin_username      = var.admin_username,
       admin_ssh_pubkey    = file(var.ssh_key_pub),
       ssh_port            = var.ssh_port,

@@ -5,6 +5,9 @@ packages:
  - wireguard
  - net-tools
  - iptables
+%{ for extra_package in extra_packages ~}
+ - ${extra_package}
+%{ endfor ~}
 
 # Create new admin user
 users:

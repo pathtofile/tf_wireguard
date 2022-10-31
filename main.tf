@@ -17,6 +17,7 @@ module "mod" {
   init_script_template = var.init_script_template
   api_key              = var.api_key
   extra_open_ports     = var.extra_open_ports
+  extra_packages       = var.extra_packages
   enable_ssh_access    = var.enable_ssh_access
   dynamic_dns_command  = var.dynamic_dns_command
 }
@@ -55,8 +56,12 @@ variable "wg_server_prikey" {
   default   = ""
 }
 
-# HTTPS settings
+# Extra settings
 variable "extra_open_ports" {
+  type    = list(any)
+  default = []
+}
+variable "extra_packages" {
   type    = list(any)
   default = []
 }

@@ -51,8 +51,12 @@ variable "wg_server_prikey" {
   nullable  = false
 }
 
-# Extra ports
+# Extra settings
 variable "extra_open_ports" {
+  type    = list(any)
+  default = []
+}
+variable "extra_packages" {
   type    = list(any)
   default = []
 }
@@ -139,6 +143,7 @@ resource "vultr_instance" "tf_instance" {
       public_iface        = var.public_iface,
       enable_ssh_access   = var.enable_ssh_access,
       extra_open_ports    = var.extra_open_ports,
+      extra_packages      = var.extra_packages,
       dynamic_dns_command = var.dynamic_dns_command,
   })
   firewall_group_id = vultr_firewall_group.tf_fw.id

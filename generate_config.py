@@ -93,7 +93,6 @@ def main():
         [Interface]
         PrivateKey = {cli_key_pri}
         Address = 10.77.67.2
-        DNS = 1.1.1.1
 
         [Peer]
         PublicKey = {srv_pubkey}

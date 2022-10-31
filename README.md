@@ -68,6 +68,7 @@ file, using `TF_VAR_xxx` environment variables, or manually editing the defaults
 ## All providers:
 | Variable Name  | Description | Default value |
 | ------------- | ------------- | ------------- |
+| `vm_name`  | Name of the VM  | tfvm |
 | `admin_username`  | New admin user to create  | ubuntu |
 | `ssh_key_pub`  | Local path the SSH public key to deploy and use  | ~/.ssh/id_rsa.pub |
 | `ssh_port`  | TCP Port SSH server will listen on  | 22 |
@@ -235,13 +236,13 @@ python generate_config.py --ssh-key C:\Users\username\.ssh\id_rsa--ddns-hostname
 ```
 
 ## Alternate client: Vagrant
-Sometime you don't want to tunnell all your traffic through WireGuard,
+Sometime you don't want to tunnel all your traffic through WireGuard,
 you just want a quick dev environment that is tunneled. You could ssh
 into the wireguard server and work on there, but these boxes are very low-specced,
 so you might struggle to do real work on them. And increasing their performance 
 increases the running costs.
 
-This repo comes with a basic Vagrant Script to quickly spin a Ubuntu
+This repo comes with a basic Vagrant Script in the `_vagrant` folder to quickly spin a Ubuntu
 VM, and install and setup WireGuard in it:
 ```bash
 # First Use terraform to create the WG server
@@ -251,7 +252,7 @@ terraform apply -auto-approve
 python3 generate_config.py aws ~/.ssh/id_rsa > wg0.conf
 
 # Now use Vagrant to create the local vm
-cd vagrant
+cd _vagrant
 vagrant up
 
 # Connect to the local vm and test everything is working

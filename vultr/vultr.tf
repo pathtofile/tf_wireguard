@@ -7,6 +7,7 @@ variable "api_key" {
 }
 
 # VM Settings
+variable "vm_name" { default = "tfvm" }
 variable "image_name" {
   default  = "Ubuntu 20.04 x64"
   nullable = false
@@ -120,7 +121,7 @@ resource "vultr_firewall_rule" "tf_fw_extra" {
 
 # Create Instance
 resource "vultr_instance" "tf_instance" {
-  hostname    = "tfinstance"
+  hostname    = var.vm_name
   enable_ipv6 = false
   plan        = var.vm_size
   region      = var.location

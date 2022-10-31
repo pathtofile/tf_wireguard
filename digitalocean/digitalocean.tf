@@ -7,6 +7,7 @@ variable "api_key" {
 }
 
 # VM settings:
+variable "vm_name" { default = "tfvm" }
 variable "location" {
   default  = "sfo3"
   nullable = false
@@ -139,7 +140,7 @@ resource "digitalocean_firewall" "tf_firewall" {
 # Create VM
 resource "digitalocean_droplet" "tf_vm" {
   image    = var.image_name
-  name     = "tfvm"
+  name     = var.vm_name
   region   = var.location
   size     = var.vm_size
   ssh_keys = [digitalocean_ssh_key.tf_keypair.fingerprint]

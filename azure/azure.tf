@@ -1,6 +1,7 @@
 # ------------------------------------------------------
 # ------------------------------------------------------
 # VM Settings:
+variable "vm_name" { default = "tfvm" }
 variable "location" {
   default  = "australiaeast"
   nullable = false
@@ -223,7 +224,7 @@ resource "azurerm_network_interface_security_group_association" "tf_nic_nsg_asso
 
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "tf_vm" {
-  name                  = "tf_vm"
+  name                  = var.vm_name
   location              = var.location
   resource_group_name   = azurerm_resource_group.tf_group.name
   network_interface_ids = [azurerm_network_interface.tf_nic.id]
@@ -242,7 +243,7 @@ resource "azurerm_linux_virtual_machine" "tf_vm" {
     version   = "latest"
   }
 
-  computer_name                   = "tfvm"
+  computer_name                   = var.vm_name
   admin_username                  = var.admin_username
   disable_password_authentication = true
 

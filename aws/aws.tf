@@ -1,6 +1,7 @@
 # ------------------------------------------------------
 # ------------------------------------------------------
 # VM settings:
+variable "vm_name" { default = "tfvm" }
 # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html
 variable "location" {
   default  = "us-west-1"
@@ -170,6 +171,9 @@ resource "aws_instance" "tf_vm" {
       dynamic_dns_command = var.dynamic_dns_command,
   })
 
+  tags = {
+    Name = var.vm_name
+  }
 }
 
 # Output

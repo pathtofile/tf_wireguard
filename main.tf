@@ -1,6 +1,7 @@
 module "mod" {
   source = "./aws"
 
+  vm_name              = var.vm_name
   admin_username       = var.admin_username
   ssh_key_pub          = var.ssh_key_pub
   ssh_port             = var.ssh_port
@@ -21,6 +22,7 @@ module "mod" {
 }
 
 # VM Settings:
+variable "vm_name" { default = "tfvm" }
 variable "location" { type = string }
 variable "init_script_template" { default = "cloud_init.yml.tftpl" }
 variable "vm_size" { default = null }

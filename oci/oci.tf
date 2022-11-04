@@ -27,7 +27,7 @@ variable "image_name" {
   nullable = false
 }
 variable "image_version" {
-  default  = "20.04"
+  default  = "22.04"
   nullable = false
 }
 variable "public_iface" { default = "ens3" }

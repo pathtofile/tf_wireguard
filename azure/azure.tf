@@ -16,11 +16,11 @@ variable "image_publisher" {
   nullable = false
 }
 variable "image_name" {
-  default  = "0001-com-ubuntu-server-focal"
+  default  = "0001-com-ubuntu-server-jammy"
   nullable = false
 }
 variable "image_version" {
-  default  = "20_04-lts"
+  default  = "22_04-lts"
   nullable = false
 }
 variable "public_iface" { default = "eth0" }

@@ -17,7 +17,7 @@ variable "image_publisher" {
   nullable = false
 }
 variable "image_name" {
-  default  = "ubuntu-minimal/images/hvm-ssd/ubuntu-focal-20.04-amd64-*"
+  default  = "ubuntu-minimal/images/hvm-ssd/ubuntu-jammy-22.04-amd64-*"
   nullable = false
 }
 variable "public_iface" { default = "eth0" }

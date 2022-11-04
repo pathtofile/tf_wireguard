@@ -9,7 +9,7 @@ variable "api_key" {
 # VM Settings
 variable "vm_name" { default = "tfvm" }
 variable "image_name" {
-  default  = "Ubuntu 20.04 x64"
+  default  = "Ubuntu 22.04 x64"
   nullable = false
 }
 

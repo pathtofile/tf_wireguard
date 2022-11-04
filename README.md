@@ -24,7 +24,7 @@ Simple Terraform Scripts to setup a WireGuard server on various cloud providers.
 
 # Overview
 Terraform will provision
-- A small Ubuntu 20.04 VM
+- A small Ubuntu 22.04 VM
 - A new admin user
 - An SSH keypair for new admin user
 - Configure SSH server to only allow 
@@ -87,7 +87,7 @@ file, using `TF_VAR_xxx` environment variables, or manually editing the defaults
 | `location`  | Region to deploy VM to | us-west-1
 | `vm_size`  | Size of VM  | t2.micro
 | `image_publisher`  | Used to select Linux Disto, see [aws.tf](./aws/aws.tf) for example | Canonical's ID
-| `image_name`  | Used to select Linux Disto, see [aws.tf](./aws/aws.tf) for example | Ubuntu 20.04
+| `image_name`  | Used to select Linux Disto, see [aws.tf](./aws/aws.tf) for example | Ubuntu 22.04
 
 ## Azure
 | Variable Name  | Description | Default value |
@@ -96,7 +96,7 @@ file, using `TF_VAR_xxx` environment variables, or manually editing the defaults
 | `vm_size`  | Size of VM  | Standard_A1_v2
 | `image_publisher`  | Used to select Linux Disto, see [azure.tf](./azure/azure.tf) for example | Canonical
 | `image_name`  | Used to select Linux Disto, see [azure.tf](./azure/azure.tf) for example | Ubuntu Server
-| `image_version`  | Used to select Linux Disto, see [azure.tf](./azure/azure.tf) for example | 20.04 LTS
+| `image_version`  | Used to select Linux Disto, see [azure.tf](./azure/azure.tf) for example | 22.04 LTS
 
 ## Digital Ocean
 | Variable Name  | Description | Default value |
@@ -114,7 +114,7 @@ For the API values see [these guides](https://docs.oracle.com/en-us/iaas/develop
 | `location`  | Region to deploy VM to | ap-sydney-1
 | `vm_size`  | Size of VM  | VM.Standard.E2.1.Micro
 | `image_name`  | Used to select Linux Disto | Canonical Ubuntu
-| `image_version`  | Used to select Linux Disto | 20.04
+| `image_version`  | Used to select Linux Disto | 22.04
 
 Additionally set the variable `api_key` to a dictionary with these values:
 | Variable Name  | Description
@@ -138,7 +138,7 @@ api_key = {
 | Variable Name  | Description | Default value |
 | ------------- | ------------- | ------------- |
 | `api_key`  | API Key |
-| `image_name`  | Used to select Linux Disto | Ubuntu 20.04 x64
+| `image_name`  | Used to select Linux Disto | Ubuntu 22.04 x64
 | `region`  | Region to deploy VM to | sjc
 | `vm_size`  | Size of VM  | vc2-1c-1gb
 
@@ -314,7 +314,7 @@ init_script_template = "cloud_init_basic.yml.tftpl"
 # Select Image
 ## Ubuntu:
 # image_publisher = "679593333241"
-# image_name      = "ubuntu-minimal/images/hvm-ssd/ubuntu-focal-20.04-amd64-*"
+# image_name      = "ubuntu-minimal/images/hvm-ssd/ubuntu-jammy-22.04-amd64-*"
 # image_version   = null
 
 ## Amazon Linux:

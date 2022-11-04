@@ -17,7 +17,7 @@ variable "vm_size" {
   nullable = false
 }
 variable "image_name" {
-  default  = "ubuntu-20-04-x64"
+  default  = "ubuntu-22-04-x64"
   nullable = false
 }
 

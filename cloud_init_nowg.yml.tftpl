@@ -41,9 +41,13 @@ runcmd:
  # Add IPtables rules for anything else
 %{ for extra_port in extra_open_ports ~}
  - sudo iptables -I INPUT 1 -i ${public_iface} -p tcp --dport ${extra_port} -j ACCEPT
+%{ if forward_ports ~}
+ - sudo iptables -t nat -A PREROUTING -p tcp --dport ${extra_port} -j DNAT --to-destination 10.77.67.2:${extra_port}
+ - sudo iptables -t nat -A POSTROUTING -p tcp -d 10.77.67.2 --dport ${extra_port} -j SNAT --to-source $(hostname -i)
+%{ endif ~}
 %{ endfor ~}
  # Restart sshd to pick up new config
  - sudo systemctl restart ssh
-%{ if dynamic_dns_command != "" ~}
- - ${dynamic_dns_command}
-%{ endif ~}
+%{ for extra_command in extra_commands ~}
+ - ${extra_command}
+%{ endfor ~}

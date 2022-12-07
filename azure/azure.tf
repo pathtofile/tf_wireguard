@@ -62,9 +62,14 @@ variable "extra_packages" {
   type    = list(any)
   default = []
 }
-
-# DynamicDNS settings:
-variable "dynamic_dns_command" { default = "" }
+variable "extra_commands" {
+  type    = list(any)
+  default = []
+}
+variable "forward_ports" {
+  type    = bool
+  default = false
+}
 
 # Unused:
 variable "api_key" { default = null }
@@ -259,18 +264,19 @@ resource "azurerm_linux_virtual_machine" "tf_vm" {
   custom_data = base64encode(templatefile(
     var.init_script_template,
     {
-      wg_client_pubkey    = file(var.wg_client_pubkey),
-      wg_psk              = file(var.wg_psk),
-      wg_server_prikey    = var.wg_server_prikey != "" ? file(var.wg_server_prikey) : "",
-      admin_username      = var.admin_username,
-      admin_ssh_pubkey    = file(var.ssh_key_pub),
-      ssh_port            = var.ssh_port,
-      wg_port             = var.wg_port,
-      public_iface        = var.public_iface,
-      enable_ssh_access   = var.enable_ssh_access,
-      extra_open_ports    = var.extra_open_ports,
-      extra_packages      = var.extra_packages,
-      dynamic_dns_command = var.dynamic_dns_command,
+      wg_client_pubkey  = file(var.wg_client_pubkey),
+      wg_psk            = file(var.wg_psk),
+      wg_server_prikey  = var.wg_server_prikey != "" ? file(var.wg_server_prikey) : "",
+      admin_username    = var.admin_username,
+      admin_ssh_pubkey  = file(var.ssh_key_pub),
+      ssh_port          = var.ssh_port,
+      wg_port           = var.wg_port,
+      public_iface      = var.public_iface,
+      enable_ssh_access = var.enable_ssh_access,
+      extra_open_ports  = var.extra_open_ports,
+      forward_ports     = var.forward_ports,
+      extra_packages    = var.extra_packages,
+      extra_commands    = var.extra_commands,
   }))
 
   tags = {

@@ -5,4 +5,4 @@ $ip_address = $tf.ip_address.value
 $port = $tf.ssh_port.value
 
 # Login to server
-ssh -o "StrictHostKeyChecking=no" -i "$HOME\.ssh\cloud" "$username@$ip_address" -p $port
+ssh -o "StrictHostKeyChecking=no" -i ".\id_cloud" "$username@$ip_address" -p $port

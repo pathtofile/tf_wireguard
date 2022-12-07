@@ -17,9 +17,10 @@ module "mod" {
   init_script_template = var.init_script_template
   api_key              = var.api_key
   extra_open_ports     = var.extra_open_ports
+  forward_ports        = var.forward_ports
   extra_packages       = var.extra_packages
   enable_ssh_access    = var.enable_ssh_access
-  dynamic_dns_command  = var.dynamic_dns_command
+  extra_commands       = var.extra_commands
 }
 
 # VM Settings:
@@ -65,9 +66,16 @@ variable "extra_packages" {
   type    = list(any)
   default = []
 }
+variable "forward_ports" {
+  type    = bool
+  default = false
+}
 
 # DynamicDNS settings:
-variable "dynamic_dns_command" { default = "" }
+variable "extra_commands" {
+  type    = list(any)
+  default = []
+}
 
 # Output
 output "username" {

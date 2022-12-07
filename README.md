@@ -76,10 +76,12 @@ file, using `TF_VAR_xxx` environment variables, or manually editing the defaults
 | `wg_client_pubkey`  | Path to file containing the client's WireGuard `public.key` | |
 | `wg_psk`  | Path to the file containing the Client's WireGuard `psk.key` | |
 | `init_script_template` | The `cloud-init` script to run | [cloud_init.yml.tftpl](cloud_init.yml.tftpl) |
-| `extra_open_ports` | A list of any extra TCP ports to open | empty list, i.e. no other port |
 | `extra_packages` | A list of any extra packages to install | empty list, i.e. no other packages |
 | `enable_ssh_access` | If true, interactive SSH access will be enabled for the admin user | False |
 | `wg_server_prikey`  | Optional, use static private key for Wireguard server. Otherwise auto-generate a new key | |
+| `extra_commands` | A list of any other bash commands to run during cloud initialisation, e.g. setting Dynamic DNS | empty list, i.e. no other commands |
+| `extra_open_ports` | A list of any extra TCP ports to open | empty list, i.e. no other port |
+| `forward_ports` | If True, traffic to `extra_open_ports` will be forwarded to Wireguard client | False |
 
 ## AWS
 | Variable Name  | Description | Default value |

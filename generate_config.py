@@ -15,9 +15,7 @@ import subprocess
 import textwrap
 
 ROOT_DIR = Path(__file__).parent
-HOME_VAR = "HOME"
-if os.name == "nt":
-    HOME_VAR = "HOMEPATH"
+
 
 def main():
     parser = argparse.ArgumentParser("Generate WireGuard config")
@@ -25,8 +23,8 @@ def main():
         "--ssh-key",
         "-s",
         dest="ssh_key",
-        default=Path(os.environ[HOME_VAR], ".ssh", "cloud").absolute(),
-        help="path to SSH private key, used to connect to WG Server",
+        default=Path(ROOT_DIR, "id_cloud"),
+        help="path to SSH private key, used to connect to WG Server, default is 'id_cloud' in current directory",
     )
 
     parser.add_argument(
@@ -48,6 +46,13 @@ def main():
         "-d",
         dest="ddns_hostname",
         help="Use this hostname instead of the IP in the config file. Useful when using dynamic DNS.",
+    )
+    parser.add_argument(
+        "--no-dns",
+        "-n",
+        dest="no_dns",
+        action="store_true",
+        help="If set, do not add DNS line to config",
     )
 
     args = parser.parse_args()
@@ -85,20 +90,24 @@ def main():
     srv_pubkey = proc.stdout.decode().strip()
 
     # Now we can generate and print the config file
-    wg_ip = srv_ip
+    wg_host = srv_ip
     if args.ddns_hostname is not None:
-        wg_ip = args.ddns_hostname
+        wg_host = args.ddns_hostname
+    dns_line = "DNS = 8.8.8.8\n"
+    if args.no_dns:
+        dns_line = ""
+
     config = textwrap.dedent(
         f"""\
         [Interface]
         PrivateKey = {cli_key_pri}
         Address = 10.77.67.2
-
+        {dns_line}
         [Peer]
         PublicKey = {srv_pubkey}
         PresharedKey = {key_psk}
         AllowedIPs = 0.0.0.0/0
-        Endpoint = {wg_ip}:{wg_port}
+        Endpoint = {wg_host}:{wg_port}
         PersistentKeepalive = 25"""
     )
     print(config)

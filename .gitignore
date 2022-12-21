@@ -9,6 +9,8 @@
 
 # WireGuard files that might end up in repo
 *.key
+*.pub
+*.pri
 *.conf
 
 # SSH Keys

@@ -54,10 +54,10 @@ write_files:
     append: true
     content: |
       iptables -t nat -I POSTROUTING 1 -s 10.77.67.2 -o ${public_iface} -j MASQUERADE
-      iptables -I INPUT 1 -i wg0 -j ACCEPT
+      iptables -A -i wg0 -j ACCEPT
       iptables -I FORWARD 1 -i ${public_iface} -o wg0 -j ACCEPT
       iptables -I FORWARD 1 -i wg0 -o ${public_iface} -j ACCEPT
-      iptables -I INPUT 1 -i ${public_iface} -p udp --dport ${wg_port} -j ACCEPT
+      iptables -A -i ${public_iface} -p udp --dport ${wg_port} -j ACCEPT
   - path: /etc/wireguard/predown.sh
     owner: root:root
     permissions: "0700"
@@ -105,14 +105,10 @@ runcmd:
  - sudo ufw enable
  # Ensure iptables works for ssh, which might be a different port
  - sudo bash -c 'iptables -D INPUT -i ${public_iface} -p tcp --dport 22 -j ACCEPT || true'
- - sudo iptables -I INPUT 1 -i ${public_iface} -p tcp --dport ${ssh_port} -j ACCEPT
+ - sudo iptables -A -i ${public_iface} -p tcp --dport ${ssh_port} -j ACCEPT
  # Add IPtables rules for anything else
 %{ for extra_port in extra_open_ports ~}
- - sudo iptables -I INPUT 1 -i ${public_iface} -p tcp --dport ${extra_port} -j ACCEPT
-%{ if forward_ports ~}
- - sudo iptables -t nat -A PREROUTING -p tcp --dport ${extra_port} -j DNAT --to-destination 10.77.67.2:${extra_port}
- - sudo iptables -t nat -A POSTROUTING -p tcp -d 10.77.67.2 --dport ${extra_port} -j SNAT --to-source $(hostname -i)
-%{ endif ~}
+ - sudo iptables -A -i ${public_iface} -p tcp --dport ${extra_port} -j ACCEPT
 %{ endfor ~}
  # Restart sshd to pick up new config
  - sudo systemctl restart ssh
@@ -126,6 +122,13 @@ runcmd:
  # Setup wireguard config and start service
  - sudo systemctl enable wg-quick@wg0.service
  - sudo systemctl start wg-quick@wg0.service
+%{ if forward_ports ~}
+- sudo iptables -t nat -I PREROUTING -i ${public_iface} -p tcp --dport ${ssh_port} -j ACCEPT
+- sudo iptables -t nat -I PREROUTING -i ${public_iface} -p udp --dport ${wg_port} -j ACCEPT
+- sudo iptables -t nat -A PREROUTING -i ${public_iface} -j DNAT --to 10.77.67.2
+- sudo iptables -A FORWARD  -i ${public_iface} -j ACCEPT
+- sudo iptables -t nat -A POSTROUTING -o ${public_iface} -j MASQUERADE
+%{ endif ~}
 %{ for extra_command in extra_commands ~}
  - ${extra_command}
 %{ endfor ~}

@@ -52,15 +52,15 @@ variable "wg_server_prikey" {
 
 # Extra settings
 variable "extra_open_ports" {
-  type    = list(any)
+  type    = set(any)
   default = []
 }
 variable "extra_packages" {
-  type    = list(any)
+  type    = set(any)
   default = []
 }
 variable "extra_commands" {
-  type    = list(any)
+  type    = set(any)
   default = []
 }
 variable "forward_ports" {

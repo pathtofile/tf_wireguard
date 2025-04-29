@@ -7,7 +7,6 @@ and sometimes the admin user isn't created straight away, and the first ssh atte
 
 But just keep trying.
 """
-import os
 import json
 import argparse
 from pathlib import Path

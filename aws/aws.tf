@@ -13,14 +13,14 @@ variable "vm_size" {
 }
 
 variable "image_publisher" {
-  default  = "679593333241"
+  default  = "099720109477"
   nullable = false
 }
 variable "image_name" {
-  default  = "ubuntu-minimal/images/hvm-ssd/ubuntu-jammy-22.04-amd64-*"
+  default  = "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-*"
   nullable = false
 }
-variable "public_iface" { default = "eth0" }
+variable "public_iface" { default = "enX0" }
 
 # Cloud Init settings
 variable "init_script_template" { default = "cloud_init.yml.tftpl" }
@@ -89,7 +89,7 @@ resource "aws_key_pair" "tf_keypair" {
   public_key = file(var.ssh_key_pub)
 }
 
-# Latest Ubuntu 20.04 Image
+# Latest Ubuntu LTS Image
 data "aws_ami" "tf_ami" {
   most_recent = true
   owners      = [var.image_publisher]

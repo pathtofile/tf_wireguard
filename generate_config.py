@@ -23,15 +23,15 @@ def main():
         "--ssh-key",
         "-s",
         dest="ssh_key",
-        default=Path(ROOT_DIR, "id_cloud"),
-        help="path to SSH private key, used to connect to WG Server, default is 'id_cloud' in current directory",
+        default=Path(ROOT_DIR, "id_tf_wireguard"),
+        help="path to SSH private key, used to connect to WG Server, default is 'id_tf_wireguard' in current directory",
     )
 
     parser.add_argument(
         "--private-key-path",
         "-pri",
         dest="key_pri",
-        default=Path(ROOT_DIR, "private.key"),
+        default=Path(ROOT_DIR, "client_private.key"),
         help="Path to wg client private key",
     )
     parser.add_argument(
@@ -57,9 +57,9 @@ def main():
 
     args = parser.parse_args()
     with open(args.key_pri, "r") as f:
-        cli_key_pri = f.read()
+        cli_key_pri = f.read().strip()
     with open(args.key_psk, "r") as f:
-        key_psk = f.read()
+        key_psk = f.read().strip()
 
     # First, We need the remote server's IP address and username
     cmd = ["terraform", "output", "-json"]
@@ -67,7 +67,7 @@ def main():
     output = json.loads(proc.stdout.decode())
     # Some outputs return a list of a IP address
     srv_ip = output["ip_address"]["value"]
-    if type(srv_ip) == list:
+    if type(srv_ip) is list:
         srv_ip = output["ip_address"]["value"][0]
     srv_username = output["username"]["value"]
     ssh_port = output["ssh_port"]["value"]
@@ -106,7 +106,7 @@ def main():
         [Peer]
         PublicKey = {srv_pubkey}
         PresharedKey = {key_psk}
-        AllowedIPs = 0.0.0.0/0
+        AllowedIPs = 0.0.0.0/0, ::/0
         Endpoint = {wg_host}:{wg_port}
         PersistentKeepalive = 25"""
     )

@@ -14,7 +14,7 @@
 *.conf
 
 # SSH Keys
-id_cloud*
+id_*
 
 # Vagrant
 vagrant/.vagrant
